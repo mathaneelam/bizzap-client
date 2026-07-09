@@ -10,9 +10,14 @@ import { useAuth } from './hooks/useAuth'
 import { useActivityLogger } from './hooks/useActivityLogger'
 import type { StaffAccess } from './types'
 
-type Tab = 'leads' | 'demos' | 'deals' | 'staff' | 'activity'
+type Tab = 'leads' | 'demos' | 'deals' | 'staff' | 'activity' | 'settings'
 
-function UserMenu({ staff, onSignOut }: { staff: StaffAccess; onSignOut: () => void }) {
+function UserMenu({ staff, onSettings, settingsActive, onSignOut }: {
+  staff: StaffAccess
+  onSettings: () => void
+  settingsActive: boolean
+  onSignOut: () => void
+}) {
   return (
     <div className="user-menu">
       {staff.avatar_url
@@ -22,6 +27,13 @@ function UserMenu({ staff, onSignOut }: { staff: StaffAccess; onSignOut: () => v
         <div className="user-menu-name">{staff.name || staff.email}</div>
         <div className="user-menu-role">{staff.role}</div>
       </div>
+      <button
+        className={`btn btn-sm ${settingsActive ? 'btn-primary' : 'btn-ghost'}`}
+        onClick={onSettings}
+        title="Settings"
+      >
+        ⚙️ Settings
+      </button>
       <button className="btn btn-ghost btn-sm" onClick={onSignOut}>Sign Out</button>
     </div>
   )
@@ -102,7 +114,12 @@ export default function App() {
 
       <header className="navbar">
         <div className="navbar-logo">Bizzap</div>
-        <UserMenu staff={staff} onSignOut={signOut} />
+        <UserMenu
+          staff={staff}
+          onSettings={() => setTab('settings')}
+          settingsActive={tab === 'settings'}
+          onSignOut={signOut}
+        />
       </header>
 
       {missingEnv && (
@@ -141,6 +158,15 @@ export default function App() {
         {tab === 'deals' && <DealsTab onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'activity' && <ActivityTab currentUser={staff} onToast={showToast} />}
         {tab === 'staff' && isAdmin && <StaffTab currentUser={staff} onToast={showToast} logActivity={logger.logActivity} />}
+        {tab === 'settings' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setTab('leads')}>← Back</button>
+              <h2 style={{ margin: 0, fontSize: 20 }}>⚙️ Settings</h2>
+            </div>
+            <DealsTab variant="archive" onToast={showToast} logActivity={logger.logActivity} />
+          </div>
+        )}
       </main>
 
       {toast && (

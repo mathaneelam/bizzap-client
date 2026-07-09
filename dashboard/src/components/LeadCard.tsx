@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import type { Lead, Business, LogActivity } from '../types'
-import OutreachModal from './OutreachModal'
+import CopyDraftModal from './CopyDraftModal'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -18,36 +18,23 @@ function getGmbUrl(business: Business): string {
   return url
 }
 
+// Mirrors the Python slugify() in pipeline/generate_demo.py & pipeline/outreach.py so a
+// UI-created demo row uses the exact slug the pipeline will later build against.
+function slugify(name: string): string {
+  let slug = name
+    .replace(/ /g, '-')
+    .split('')
+    .map(c => (/[a-z0-9-]/i.test(c) ? c.toLowerCase() : '-'))
+    .join('')
+  while (slug.includes('--')) slug = slug.replace(/--/g, '-')
+  return slug.replace(/^-+|-+$/g, '')
+}
+
 interface Props {
   lead: Lead
   onUpdated: () => void
   onToast: (msg: string) => void
   logActivity?: LogActivity
-}
-
-function buildClaudePrompt(lead: Lead): string {
-  const b = lead.businesses!
-  return `Write concise, credible website copy for "${b.name}", a "${b.category}" (${b.segment}) located in Tiruppur, Tamil Nadu.
-Ground every claim in these facts — do not invent certifications, awards, or founding dates:
-- Name: ${b.name}
-- Category: ${b.category}
-- Address: ${b.address || 'Tiruppur, Tamil Nadu'}
-- Rating: ${b.rating}/5.0 based on ${b.review_count} reviews on Google Maps.
-
-Return ONLY JSON matching this shape, no other text or markdown block wrappers:
-{
-  "tagline": "A single premium B2B or B2C tagline for this business",
-  "hero_headline": "Bold, high-converting headline",
-  "hero_sub": "Sub-headline elaborating on specializations",
-  "about_body": "Detailed paragraph about their work, history, and commitment to quality.",
-  "seo_title": "SEO Title (max 60 chars)",
-  "seo_meta": "SEO Description (max 160 chars)",
-  "blurbs": [
-    "Short description (under 15 words) of product/service line 1",
-    "Short description (under 15 words) of product/service line 2",
-    "Short description (under 15 words) of product/service line 3"
-  ]
-}`
 }
 
 function scoreClass(score: number) {
@@ -62,41 +49,41 @@ function statusPillClass(status: string) {
 
 export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Props) {
   const [showModal, setShowModal] = useState(false)
-  const [showOutreach, setShowOutreach] = useState(false)
-  const [draft, setDraft] = useState(lead.copy_draft || '')
-  const [saving, setSaving] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [moving, setMoving] = useState(false)
 
   const b = lead.businesses!
-  const prompt = buildClaudePrompt(lead)
 
-  async function handleCopyPrompt() {
-    await navigator.clipboard.writeText(prompt)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
-  }
-
-  async function handleSaveDraft() {
-    setSaving(true)
-    try {
-      JSON.parse(draft) // validate JSON
-    } catch {
-      onToast('⚠️ Invalid JSON. Please paste the exact Claude response.')
-      setSaving(false)
+  async function handleMoveToDemos() {
+    setMoving(true)
+    const slug = slugify(b.name)
+    const { error: demoErr } = await supabase
+      .from('demos')
+      .insert({ lead_id: lead.id, slug, approved: false })
+    if (demoErr) {
+      setMoving(false)
+      const dup = demoErr.code === '23505' || /duplicate|unique/i.test(demoErr.message)
+      onToast(dup
+        ? `⚠️ A demo with slug "${slug}" already exists.`
+        : '❌ Failed to create demo: ' + demoErr.message)
       return
     }
-    const { error } = await supabase
+
+    const { error: leadErr } = await supabase
       .from('leads')
-      .update({ copy_draft: draft })
+      .update({ status: 'demo_built' })
       .eq('id', lead.id)
-    setSaving(false)
-    if (error) {
-      onToast('❌ Failed to save draft: ' + error.message)
+    setMoving(false)
+    if (leadErr) {
+      onToast('❌ Demo created, but status update failed: ' + leadErr.message)
     } else {
-      onToast('✅ Copy draft saved to Supabase!')
-      setShowModal(false)
-      onUpdated()
+      onToast('🖥️ Moved to Demos — pending review!')
     }
+    logActivity?.({
+      action: 'demo_created',
+      entityType: 'demo',
+      entityLabel: b.name,
+    })
+    onUpdated()
   }
 
   return (
@@ -138,11 +125,9 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '✏️ Edit Copy Draft' : '📋 Generate Copy'}
           </button>
-          {(lead.status === 'demo_built' || lead.status === 'contacted') && (
-            <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => setShowOutreach(true)}>
-              💬 Outreach & Invoice
-            </button>
-          )}
+          <button className="btn btn-ghost btn-sm" onClick={handleMoveToDemos} disabled={moving}>
+            {moving ? 'Moving…' : '🖥️ Move to Demos'}
+          </button>
           {b.website && (
             <a className="btn btn-ghost btn-sm" href={b.website} target="_blank" rel="noreferrer">
               🌐 Website
@@ -160,48 +145,11 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowModal(false)}>
-          <div className="modal">
-            <div className="modal-title">{b.name}</div>
-            <div className="modal-sub">
-              1. Copy the prompt below → 2. Paste into Claude.ai → 3. Copy the JSON reply back here
-            </div>
-
-            <p className="section-label">Claude Prompt</p>
-            <div className="prompt-box">{prompt}</div>
-            <div className="card-actions" style={{ marginTop: 0, marginBottom: 20 }}>
-              <button className="btn btn-primary btn-sm" onClick={handleCopyPrompt}>
-                {copied ? '✅ Copied!' : '📋 Copy Prompt'}
-              </button>
-              <a className="btn btn-ghost btn-sm" href="https://claude.ai" target="_blank" rel="noreferrer">
-                Open Claude.ai →
-              </a>
-            </div>
-
-            <p className="section-label">Paste Claude's JSON Reply</p>
-            <textarea
-              className="textarea"
-              placeholder={'{\n  "tagline": "...",\n  "hero_headline": "...",\n  ...\n}'}
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-            />
-            <div className="card-actions" style={{ marginTop: 16 }}>
-              <button className="btn btn-primary" onClick={handleSaveDraft} disabled={saving}>
-                {saving ? 'Saving…' : '💾 Save to Supabase'}
-              </button>
-              <button className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showOutreach && (
-        <OutreachModal
+        <CopyDraftModal
           lead={lead}
-          onClose={() => setShowOutreach(false)}
+          onClose={() => setShowModal(false)}
           onUpdated={onUpdated}
           onToast={onToast}
-          logActivity={logActivity}
         />
       )}
     </>
