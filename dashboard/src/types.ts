@@ -33,6 +33,7 @@ export interface Demo {
   slug: string
   demo_url: string | null
   screenshot: string | null
+  site_json_path: string | null
   approved: boolean
   built_at: string
   leads?: Lead & { businesses?: Business }
