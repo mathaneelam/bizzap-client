@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Lead, supabase } from '../supabase'
+import { supabase } from '../supabase'
+import type { Lead } from '../types'
 
 interface Props {
   lead: Lead

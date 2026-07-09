@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase, Lead } from '../supabase'
+import { supabase } from '../supabase'
+import type { Lead } from '../types'
 import LeadCard from '../components/LeadCard'
 
 interface Props {

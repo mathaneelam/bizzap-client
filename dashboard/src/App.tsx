@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './theme.css'
 import LeadsTab from './tabs/LeadsTab'
 import DemosTab from './tabs/DemosTab'

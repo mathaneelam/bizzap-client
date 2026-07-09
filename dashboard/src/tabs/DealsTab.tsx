@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase, Deal } from '../supabase'
+import { supabase } from '../supabase'
+import type { Deal } from '../types'
 
 interface Props {
   onToast: (msg: string) => void
