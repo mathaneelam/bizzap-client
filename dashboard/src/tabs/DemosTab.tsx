@@ -1,6 +1,21 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Demo } from '../types'
+import type { Demo, Business } from '../types'
+
+function getGmbUrl(business: Business): string {
+  let url = `https://www.google.com/maps/place/${business.place_ref}/`
+  if (business.raw) {
+    try {
+      const rawObj = JSON.parse(business.raw)
+      if (rawObj.scraped_url) {
+        url = rawObj.scraped_url
+      }
+    } catch {
+      // fallback
+    }
+  }
+  return url
+}
 
 interface Props {
   onToast: (msg: string) => void
@@ -113,10 +128,10 @@ export default function DemosTab({ onToast }: Props) {
                     🔗 View Demo
                   </a>
                 )}
-                {biz?.place_ref && (
+                {biz && (
                   <a
                     className="btn btn-ghost btn-sm"
-                    href={`https://www.google.com/maps/place/${biz.place_ref}/`}
+                    href={getGmbUrl(biz)}
                     target="_blank"
                     rel="noreferrer"
                   >

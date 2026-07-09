@@ -12,6 +12,7 @@ export interface Business {
   address: string | null
   lat: number | null
   lng: number | null
+  raw: string | null
 }
 
 export interface Lead {
