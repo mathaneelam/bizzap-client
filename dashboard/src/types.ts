@@ -22,6 +22,7 @@ export interface Lead {
   has_website: boolean
   reason: string | null
   copy_draft: string | null
+  gen_count: number
   status: string
   created_at: string
   businesses?: Business

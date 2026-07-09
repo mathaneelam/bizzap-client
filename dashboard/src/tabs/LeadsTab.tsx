@@ -39,10 +39,14 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
 
   useEffect(() => { fetchLeads() }, [])
 
-  const statuses = ['all', 'new', 'lost']
-  const filtered = filter === 'all' ? leads : leads.filter(l => l.status === filter)
+  const statuses = ['all', 'needs_fix', 'new', 'lost']
+  // `needs_fix` leads were sent back from Demos — surface them first so they get fixed immediately.
+  const filtered = (filter === 'all' ? leads : leads.filter(l => l.status === filter))
+    .slice()
+    .sort((a, b) => (a.status === 'needs_fix' ? 0 : 1) - (b.status === 'needs_fix' ? 0 : 1) || b.score - a.score)
 
   const totalLeads = leads.length
+  const needsFix   = leads.filter(l => l.status === 'needs_fix').length
   const qualified  = leads.filter(l => l.score >= 40).length
   const withDraft  = leads.filter(l => l.copy_draft).length
 
@@ -65,6 +69,10 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
         <div className="stat-card">
           <div className="stat-val">{totalLeads}</div>
           <div className="stat-lbl">Leads Waiting</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-val" style={{ color: 'var(--amber)' }}>{needsFix}</div>
+          <div className="stat-lbl">Needs Fix</div>
         </div>
         <div className="stat-card">
           <div className="stat-val" style={{ color: 'var(--green)' }}>{qualified}</div>

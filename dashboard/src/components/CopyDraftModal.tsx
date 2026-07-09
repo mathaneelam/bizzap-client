@@ -41,6 +41,7 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
 
   const b = lead.businesses!
   const prompt = buildClaudePrompt(lead)
+  const isRegen = !!lead.copy_draft
 
   async function handleCopyPrompt() {
     await navigator.clipboard.writeText(prompt)
@@ -57,15 +58,16 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
       setSaving(false)
       return
     }
+    const nextCount = (lead.gen_count ?? 0) + 1
     const { error } = await supabase
       .from('leads')
-      .update({ copy_draft: draft })
+      .update({ copy_draft: draft, gen_count: nextCount })
       .eq('id', lead.id)
     setSaving(false)
     if (error) {
-      onToast('❌ Failed to save draft: ' + error.message)
+      onToast('❌ Failed to generate: ' + error.message)
     } else {
-      onToast('✅ Copy draft saved to Supabase!')
+      onToast(isRegen ? `🔄 Website re-generated (×${nextCount})!` : '🌐 Website generated!')
       onClose()
       onUpdated()
     }
@@ -99,7 +101,7 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
         />
         <div className="card-actions" style={{ marginTop: 16 }}>
           <button className="btn btn-primary" onClick={handleSaveDraft} disabled={saving}>
-            {saving ? 'Saving…' : '💾 Save to Supabase'}
+            {saving ? 'Generating…' : (isRegen ? '🔄 Re-Generate' : '✨ Generate')}
           </button>
           <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
         </div>

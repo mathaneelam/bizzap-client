@@ -263,6 +263,20 @@ body::before {
 .pill-won       { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
 .pill-lost      { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: rgba(239,68,68,0.08); }
 .pill-demo_built { color: #818cf8; border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.08); }
+.pill-needs_fix { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); }
+
+/* ─── Priority (sent-back) lead card ─────────────────────────── */
+.card-priority { border-color: rgba(245,158,11,0.45); box-shadow: 0 0 0 1px rgba(245,158,11,0.25), 0 20px 60px rgba(245,158,11,0.08); }
+.priority-banner {
+  margin: -4px 0 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--amber);
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+}
 
 /* ─── Buttons ────────────────────────────────────────────────── */
 .btn {
