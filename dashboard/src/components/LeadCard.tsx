@@ -52,6 +52,8 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
   const [moving, setMoving] = useState(false)
 
   const b = lead.businesses!
+  // Predictable generated-site URL (built by the pipeline from the saved copy draft).
+  const siteUrl = `https://bizzap-demos.pages.dev/${slugify(b.name)}/`
 
   async function handleMoveToDemos() {
     setMoving(true)
@@ -86,9 +88,16 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
     onUpdated()
   }
 
+  const needsFix = lead.status === 'needs_fix'
+
   return (
     <>
-      <div className="card">
+      <div className={`card ${needsFix ? 'card-priority' : ''}`}>
+        {needsFix && (
+          <div className="priority-banner">
+            ⚠️ Sent back from Demos — fix the copy/site, then Move to Demos again.
+          </div>
+        )}
         <div className="card-header">
           <div>
             <div className="card-name">{b.name}</div>
@@ -116,21 +125,33 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
         </div>
 
         {lead.copy_draft && (
-          <div className="meta-row" style={{ color: 'var(--green)', marginTop: 10 }}>
-            ✓ Copy draft saved
+          <div className="meta-row" style={{ marginTop: 10 }}>
+            🌐 <a href={siteUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent)' }}>
+              {siteUrl.replace('https://', '')}
+            </a>
+            {lead.gen_count > 0 && (
+              <span className="pill pill-new" style={{ marginLeft: 8 }}>
+                generated ×{lead.gen_count}
+              </span>
+            )}
           </div>
         )}
 
         <div className="card-actions">
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
-            {lead.copy_draft ? '✏️ Edit Copy Draft' : '📋 Generate Copy'}
+            {lead.copy_draft ? '🔄 Re-Generate' : '✨ Generate'}
           </button>
+          {lead.copy_draft && (
+            <a className="btn btn-ghost btn-sm" href={siteUrl} target="_blank" rel="noreferrer">
+              🌐 View Website
+            </a>
+          )}
           <button className="btn btn-ghost btn-sm" onClick={handleMoveToDemos} disabled={moving}>
             {moving ? 'Moving…' : '🖥️ Move to Demos'}
           </button>
           {b.website && (
             <a className="btn btn-ghost btn-sm" href={b.website} target="_blank" rel="noreferrer">
-              🌐 Website
+              🌐 Their Site
             </a>
           )}
           <a

@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS leads (
   has_website   BOOLEAN DEFAULT FALSE,
   reason        TEXT,
   copy_draft    TEXT,                         -- JSON blob of Claude-generated copy (pasted via Admin Dashboard)
-  status        VARCHAR(50) DEFAULT 'new',    -- new|demo_built|contacted|replied|call|won|lost|dnc
+  gen_count     INTEGER DEFAULT 0,            -- how many times the website copy has been (re)generated
+  status        VARCHAR(50) DEFAULT 'new',    -- new|demo_built|contacted|replied|call|won|lost|dnc|needs_fix
   created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { Demo, Business, Lead, LogActivity } from '../types'
-import CopyDraftModal from '../components/CopyDraftModal'
 import OutreachModal from '../components/OutreachModal'
 
 function getGmbUrl(business: Business): string {
@@ -27,7 +26,6 @@ interface Props {
 export default function DemosTab({ onToast, logActivity }: Props) {
   const [demos, setDemos] = useState<Demo[]>([])
   const [loading, setLoading] = useState(true)
-  const [editLead, setEditLead] = useState<Lead | null>(null)
   const [outreachLead, setOutreachLead] = useState<Lead | null>(null)
 
   async function fetchDemos() {
@@ -69,6 +67,30 @@ export default function DemosTab({ onToast, logActivity }: Props) {
       }
       fetchDemos()
     }
+  }
+
+  // Website not good enough → delete the demo so the card returns to Leads Manager,
+  // and flag the lead `needs_fix` so it sorts to the top there for immediate correction.
+  async function moveBackToLeads(demo: Demo) {
+    const name = demo.leads?.businesses?.name || demo.slug
+    if (!window.confirm(`Send "${name}" back to Leads for correction? This removes the current demo.`)) return
+
+    const { error: demoErr } = await supabase.from('demos').delete().eq('id', demo.id)
+    if (demoErr) {
+      onToast('❌ Failed to move back: ' + demoErr.message)
+      return
+    }
+    if (demo.lead_id) {
+      await supabase.from('leads').update({ status: 'needs_fix' }).eq('id', demo.lead_id)
+    }
+    onToast('↩ Sent back to Leads — flagged for correction')
+    logActivity?.({
+      action: 'demo_sent_back',
+      entityType: 'lead',
+      entityId: demo.lead_id,
+      entityLabel: name,
+    })
+    fetchDemos()
   }
 
   useEffect(() => { fetchDemos() }, [])
@@ -141,21 +163,26 @@ export default function DemosTab({ onToast, logActivity }: Props) {
               </div>
 
               <div className="card-actions">
-                {demo.demo_url && (
-                  <a className="btn btn-primary btn-sm" href={demo.demo_url} target="_blank" rel="noreferrer">
-                    🔗 View Demo
-                  </a>
-                )}
-                {demo.leads && (
-                  <button className="btn btn-ghost btn-sm" onClick={() => setEditLead(demo.leads!)}>
-                    {demo.leads.copy_draft ? '✏️ Edit Copy Draft' : '📋 Generate Copy'}
-                  </button>
-                )}
+                <a
+                  className="btn btn-primary btn-sm"
+                  href={demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  🌐 View Website
+                </a>
                 {demo.leads && (
                   <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => setOutreachLead(demo.leads!)}>
                     💬 Outreach & Invoice
                   </button>
                 )}
+                <button
+                  className="btn btn-ghost btn-sm"
+                  style={{ color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.3)' }}
+                  onClick={() => moveBackToLeads(demo)}
+                >
+                  ↩ Send Back for Fixes
+                </button>
                 {biz && (
                   <a
                     className="btn btn-ghost btn-sm"
@@ -178,15 +205,6 @@ export default function DemosTab({ onToast, logActivity }: Props) {
           )
         })}
       </div>
-
-      {editLead && (
-        <CopyDraftModal
-          lead={editLead}
-          onClose={() => setEditLead(null)}
-          onUpdated={fetchDemos}
-          onToast={onToast}
-        />
-      )}
 
       {outreachLead && (
         <OutreachModal
