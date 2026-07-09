@@ -1,0 +1,44 @@
+[
+  {
+    "place_ref": "Tirupur+Clothing",
+    "name": "Tirupur Clothing",
+    "category": "Garment Exporter",
+    "segment": "manufacturer",
+    "phone": "09894261560",
+    "website": "https://tirupurclothing.com/",
+    "rating": 4.6,
+    "review_count": 63,
+    "address": "\n60, first cross, Jaivabhai School Rd, opp. DEEN FANCY STORE, Tiruppur, Tamil Nadu 641601",
+    "lat": null,
+    "lng": null,
+    "raw": "{\"scraped_url\": \"https://www.google.com/maps/place/Tirupur+Clothing/data=!4m7!3m6!1s0x3ba9aa128fffffff:0x562f5bbf200e42dd!8m2!3d11.1067055!4d77.3270733!16s%2Fg%2F1tj838wg!19sChIJ____jxKqqTsR3UIOIL9bL1Y?authuser=0&hl=en&rclk=1\", \"raw_category\": \"Garment Exporter\", \"rating\": 4.6, \"reviews\": 63}"
+  },
+  {
+    "place_ref": "Garment+Manufacturer+Tirupur",
+    "name": "Garment Manufacturer Tirupur",
+    "category": "Manufacturer",
+    "segment": "manufacturer",
+    "phone": "09626660098",
+    "website": null,
+    "rating": 5.0,
+    "review_count": 19,
+    "address": "\nDoor No:14, 4th St, K V R Nagar, Karuvampalayam, Tiruppur, Andipalayam, Tamil Nadu 641604",
+    "lat": null,
+    "lng": null,
+    "raw": "{\"scraped_url\": \"https://www.google.com/maps/place/Garment+Manufacturer+Tirupur/data=!4m7!3m6!1s0x3ba90782ea5b10b5:0xf46bed7f4de75a05!8m2!3d11.087398!4d77.3332745!16s%2Fg%2F11pz2pybdq!19sChIJtRBb6oIHqTsRBVrnTX_ta_Q?authuser=0&hl=en&rclk=1\", \"raw_category\": \"Manufacturer\", \"rating\": 5.0, \"reviews\": 19}"
+  },
+  {
+    "place_ref": "Essa+Garments+Pvt.+Ltd.",
+    "name": "Essa Garments Pvt. Ltd.",
+    "category": "Clothing manufacturer",
+    "segment": "manufacturer",
+    "phone": "08056511166",
+    "website": "http://www.essagarments.com/",
+    "rating": 4.4,
+    "review_count": 77,
+    "address": "\n10, Pushpa Nagr, Kangayam Cross Road, Tiruppur, Tamil Nadu 641601",
+    "lat": null,
+    "lng": null,
+    "raw": "{\"scraped_url\": \"https://www.google.com/maps/place/Essa+Garments+Pvt.+Ltd./data=!4m7!3m6!1s0x3ba99f58412685a1:0xbeec61cb197b4020!8m2!3d11.1051206!4d77.3430041!16s%2Fg%2F1thhhyr2!19sChIJoYUmQVifqTsRIEB7Gcth7L4?authuser=0&hl=en&rclk=1\", \"raw_category\": \"Clothing manufacturer\", \"rating\": 4.4, \"reviews\": 77}"
+  }
+]
