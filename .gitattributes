@@ -1,0 +1,9 @@
+# Normalize line endings to LF in the repository
+* text=auto eol=lf
+
+# Force binary files to avoid corruption
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.zip binary

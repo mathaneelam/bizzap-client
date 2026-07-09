@@ -1,0 +1,29 @@
+{
+  "name": "bizzap-renderer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "ajv": "^8.16.0",
+    "ajv-formats": "^3.0.1",
+    "jsdom": "^24.1.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1",
+    "vitest": "^1.6.0"
+  }
+}

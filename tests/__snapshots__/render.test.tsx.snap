@@ -1,0 +1,2285 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Templates Rendering & Snapshots > renders ManufacturerTemplate correctly 1`] = `
+<div
+  class="template-manufacturer"
+>
+  <header
+    class="site-header"
+  >
+    <div
+      class="container header-container"
+    >
+      <a
+        class="site-logo-link"
+        href="#"
+      >
+        <span
+          class="site-logo-text"
+        >
+          Tiruppur Test Shop
+        </span>
+      </a>
+      <button
+        aria-label="Toggle menu"
+        class="mobile-menu-toggle"
+      >
+        <svg
+          fill="currentColor"
+          height="20"
+          viewBox="0 0 448 512"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+          />
+        </svg>
+      </button>
+      <nav
+        class="site-nav "
+      >
+        <ul
+          class="nav-list"
+        >
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              Home
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              About
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              Contact
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div
+        class="header-cta"
+      >
+        <a
+          class="btn btn-primary header-call-btn"
+          href="tel:+919999999999"
+        >
+          Call: 
+          +919999999999
+        </a>
+      </div>
+    </div>
+    <style>
+      
+        .site-header {
+          position: sticky;
+          top: 0;
+          left: 0;
+          right: 0;
+          background-color: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--border-color-light);
+          z-index: 1000;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .header-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 70px;
+        }
+
+        .site-logo-link {
+          display: flex;
+          align-items: center;
+        }
+
+        .site-logo-img {
+          max-height: 45px;
+          width: auto;
+        }
+
+        .site-logo-text {
+          font-family: var(--font-head);
+          font-weight: 800;
+          font-size: 1.4rem;
+          color: var(--primary-color);
+          letter-spacing: -0.02em;
+        }
+
+        .mobile-menu-toggle {
+          display: none;
+          background: transparent;
+          border: none;
+          color: var(--primary-color);
+          cursor: pointer;
+        }
+
+        .site-nav {
+          display: flex;
+        }
+
+        .nav-list {
+          display: flex;
+          list-style: none;
+          gap: 2rem;
+        }
+
+        .nav-link-btn {
+          background: none;
+          border: none;
+          font-family: var(--font-body);
+          font-weight: 600;
+          font-size: 0.95rem;
+          color: #4b5563;
+          cursor: pointer;
+          padding: 0.5rem 0;
+          position: relative;
+          transition: color var(--transition-fast);
+        }
+
+        .nav-link-btn:hover {
+          color: var(--accent-color);
+        }
+
+        .nav-link-btn::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: var(--accent-color);
+          transition: width var(--transition-fast);
+        }
+
+        .nav-link-btn:hover::after {
+          width: 100%;
+        }
+
+        .header-cta {
+          display: flex;
+        }
+
+        .header-call-btn {
+          padding: 0.5rem 1.2rem;
+          font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+          .mobile-menu-toggle {
+            display: block;
+          }
+
+          .site-nav {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color-light);
+            padding: 1.5rem var(--space-md);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+          }
+
+          .site-nav.nav-open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+
+          .nav-list {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+          }
+
+          .header-cta {
+            display: none;
+          }
+        }
+      
+    </style>
+  </header>
+  <main>
+    <section
+      class="hero-section"
+    >
+      <div
+        class="container hero-container"
+      >
+        <div
+          class="hero-content animate-fade-in"
+        >
+          <span
+            class="hero-badge"
+          >
+            Garment Maker
+          </span>
+          <h1>
+            Welcome to Test
+          </h1>
+          <p>
+            Sub welcome
+          </p>
+          <div
+            class="hero-actions"
+          >
+            <button
+              class="btn btn-primary btn-lg-size"
+            >
+              Inquire
+            </button>
+            <a
+              class="btn btn-secondary btn-lg-size"
+              href="tel:+919999999999"
+            >
+              Call Now
+            </a>
+          </div>
+        </div>
+        <div
+          class="hero-image-container animate-fade-in"
+        >
+          <img
+            alt="Tiruppur Test Shop"
+            class="hero-image"
+            src="test.jpg"
+          />
+          <div
+            class="hero-image-backdrop"
+          />
+        </div>
+      </div>
+      <style>
+        
+        .hero-section {
+          background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(243,244,246,1) 100%);
+          position: relative;
+          overflow: hidden;
+          padding: 5rem 0;
+          border-bottom: 1px solid var(--border-color-light);
+        }
+
+        .hero-container {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--space-lg);
+          align-items: center;
+        }
+
+        @media (min-width: 992px) {
+          .hero-container {
+            grid-template-columns: 1.2fr 1fr;
+            padding: 4rem var(--space-md);
+          }
+        }
+
+        .hero-content {
+          text-align: left;
+          max-width: 650px;
+        }
+
+        .hero-badge {
+          display: inline-block;
+          background-color: rgba(58, 134, 200, 0.1);
+          color: var(--accent-color);
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 1.25rem;
+        }
+
+        .hero-content h1 {
+          color: var(--primary-color);
+          margin-bottom: 1.25rem;
+        }
+
+        .hero-content p {
+          color: #4b5563;
+          margin-bottom: 2rem;
+          font-size: 1.2rem;
+          line-height: 1.6;
+        }
+
+        .hero-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .btn-lg-size {
+          padding: 0.9rem 2.2rem;
+          font-size: 1.05rem;
+        }
+
+        .hero-image-container {
+          position: relative;
+          width: 100%;
+          border-radius: var(--border-radius-lg);
+          overflow: hidden;
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .hero-image {
+          width: 100%;
+          height: auto;
+          object-fit: cover;
+          max-height: 480px;
+          border-radius: var(--border-radius-lg);
+          z-index: 2;
+          position: relative;
+          transition: transform var(--transition-normal);
+        }
+
+        .hero-image-container:hover .hero-image {
+          transform: scale(1.02);
+        }
+
+        .hero-image-backdrop {
+          position: absolute;
+          top: 10%;
+          left: 10%;
+          width: 90%;
+          height: 90%;
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+          border-radius: var(--border-radius-lg);
+          opacity: 0.15;
+          z-index: 1;
+        }
+      
+      </style>
+    </section>
+    <section
+      class="about-section section-padding"
+      id="about"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="grid grid-2 about-grid"
+        >
+          <div
+            class="about-text-content"
+          >
+            <span
+              class="section-subtitle"
+            >
+              Our Profile
+            </span>
+            <h2
+              class="about-title"
+            >
+              About 
+              Tiruppur Test Shop
+            </h2>
+            <div
+              class="about-divider"
+            />
+            <p
+              class="about-description"
+            >
+              About us text
+            </p>
+          </div>
+          <div
+            class="about-stats-container"
+          >
+            <div
+              class="grid grid-2 stats-subgrid"
+            >
+              <div
+                class="card stat-card text-center"
+              >
+                <span
+                  class="stat-value"
+                >
+                  10
+                </span>
+                <span
+                  class="stat-key"
+                >
+                  Exports
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .about-section {
+          background-color: #ffffff;
+        }
+
+        .about-grid {
+          align-items: center;
+          gap: var(--space-lg);
+        }
+
+        .section-subtitle {
+          color: var(--accent-color);
+          font-weight: 700;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          letter-spacing: 0.1em;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .about-title {
+          color: var(--primary-color);
+          font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+          margin-bottom: 1rem;
+        }
+
+        .about-divider {
+          width: 50px;
+          height: 3px;
+          background-color: var(--accent-color);
+          margin-bottom: 1.5rem;
+          border-radius: 2px;
+        }
+
+        .about-description {
+          color: #4b5563;
+          font-size: 1.05rem;
+          line-height: 1.8;
+          white-space: pre-line;
+        }
+
+        .stat-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem 1rem;
+          border-radius: var(--border-radius-md);
+          background: linear-gradient(135deg, #ffffff 0%, rgba(243,244,246,0.3) 100%);
+          border-left: 4px solid var(--accent-color);
+        }
+
+        .text-center {
+          text-align: center;
+        }
+
+        .stat-value {
+          font-family: var(--font-head);
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: var(--primary-color);
+          line-height: 1;
+          margin-bottom: 0.5rem;
+        }
+
+        .stat-key {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #6b7280;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .stats-subgrid {
+          gap: var(--space-sm);
+        }
+      
+      </style>
+    </section>
+    <section
+      class="capabilities-section section-padding"
+      id="capabilities"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="section-header"
+        >
+          <h2>
+            Our Capabilities & Standards
+          </h2>
+          <p>
+            We maintain top-tier processes, certifications, and operational expertise.
+          </p>
+        </div>
+        <div
+          class="grid grid-4 capabilities-grid"
+        >
+          <div
+            class="card capability-card"
+          >
+            <div
+              class="capability-icon-wrapper"
+            >
+              <svg
+                class="capability-icon"
+                fill="currentColor"
+                height="20"
+                viewBox="0 0 512 512"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+                />
+              </svg>
+            </div>
+            <span
+              class="capability-name"
+            >
+              Fast Delivery
+            </span>
+          </div>
+          <div
+            class="card capability-card"
+          >
+            <div
+              class="capability-icon-wrapper"
+            >
+              <svg
+                class="capability-icon"
+                fill="currentColor"
+                height="20"
+                viewBox="0 0 512 512"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+                />
+              </svg>
+            </div>
+            <span
+              class="capability-name"
+            >
+              Organic Cotton
+            </span>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .capabilities-section {
+          background-color: #ffffff;
+        }
+
+        .capability-card {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.25rem var(--space-sm);
+          background-color: var(--bg-light);
+          border: 1px solid var(--border-color-light);
+          border-radius: var(--border-radius-sm);
+          text-align: left;
+        }
+
+        .capability-icon-wrapper {
+          color: var(--success-color);
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+        }
+
+        .capability-name {
+          font-weight: 600;
+          font-size: 1.05rem;
+          color: var(--primary-color);
+        }
+      
+      </style>
+    </section>
+    <section
+      class="section-padding text-center"
+      style="background-color: rgb(255, 255, 255);"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="section-header"
+        >
+          <h2>
+            Request a Quote
+          </h2>
+          <p>
+            Get in touch with our sales team for capacity details, MOQs, and pricing sheets.
+          </p>
+        </div>
+        <div
+          class="contact-form-container card"
+          id="contact-form-section"
+        >
+          <form
+            class="contact-form"
+          >
+            <div
+              class="form-group"
+            >
+              <label
+                for="name"
+              >
+                Full Name *
+              </label>
+              <input
+                id="name"
+                name="name"
+                placeholder="e.g. Kumar"
+                required=""
+                type="text"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="phone"
+              >
+                Mobile Number *
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                placeholder="e.g. +91 98765 43210"
+                required=""
+                type="tel"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="email"
+              >
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                placeholder="e.g. name@example.com"
+                type="email"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="message"
+              >
+                Message / Requirement *
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Describe what you are looking for..."
+                required=""
+                rows="4"
+              />
+            </div>
+            <button
+              class="btn btn-primary w-full"
+              type="submit"
+            >
+              Send Inquiry
+            </button>
+          </form>
+          <style>
+            
+        .contact-form-container {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .contact-form {
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          text-align: left;
+        }
+
+        .form-group label {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+          padding: 0.75rem 1rem;
+          border: 1px solid var(--border-color-light);
+          border-radius: var(--border-radius-sm);
+          font-family: var(--font-body);
+          font-size: 1rem;
+          background-color: var(--bg-light);
+          transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--accent-color);
+          box-shadow: 0 0 0 3px rgba(58, 134, 200, 0.15);
+        }
+
+        .w-full {
+          width: 100%;
+        }
+
+        .form-success {
+          text-align: center;
+          padding: var(--space-md) 0;
+        }
+
+        .success-icon {
+          width: 64px;
+          height: 64px;
+          background-color: var(--success-color);
+          color: white;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 32px;
+          margin-bottom: var(--space-sm);
+        }
+
+        .form-success h3 {
+          margin-bottom: var(--space-xs);
+          color: var(--success-color);
+        }
+
+        .redirect-note {
+          font-size: 0.9rem;
+          color: #6b7280;
+          margin-top: 0.5rem;
+          font-style: italic;
+        }
+      
+          </style>
+        </div>
+      </div>
+    </section>
+    <section
+      aria-label="Structured Business Facts"
+      class="ai-facts-section"
+      id="ai-facts"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="card ai-facts-card"
+        >
+          <div
+            class="ai-facts-header"
+          >
+            <div
+              class="ai-badge"
+            >
+              GEO OPTIMIZED
+            </div>
+            <h3>
+              Verified Business Information Directory
+            </h3>
+            <p>
+              Structured factual catalog for AI search engines, RAG systems, and user inquiries.
+            </p>
+          </div>
+          <div
+            class="ai-facts-table-wrapper"
+          >
+            <table
+              class="ai-facts-table"
+              data-ai-optimized="true"
+            >
+              <tbody>
+                <tr>
+                  <th>
+                    Official Name
+                  </th>
+                  <td>
+                    <strong>
+                      Tiruppur Test Shop
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Industry Category
+                  </th>
+                  <td>
+                    Garment Maker
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Operational Base
+                  </th>
+                  <td>
+                    Tiruppur TN
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Primary Contact
+                  </th>
+                  <td>
+                    +919999999999
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Specializations & Capabilities
+                  </th>
+                  <td>
+                    Fast Delivery, Organic Cotton
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Supported Locales
+                  </th>
+                  <td>
+                    EN
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Factual Source Citation
+                  </th>
+                  <td>
+                    <a
+                      class="citation-link"
+                      href="https://maps.google.com"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Google Business Profile (Verified Reference)
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .ai-facts-section {
+          background-color: var(--bg-light);
+          padding: var(--space-md) 0 var(--space-lg) 0;
+          border-top: 1px solid var(--border-color-light);
+        }
+
+        .ai-facts-card {
+          background-color: #ffffff;
+          border: 1px dashed var(--accent-color);
+          border-radius: var(--border-radius-md);
+          padding: var(--space-md);
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .ai-facts-header {
+          text-align: left;
+          margin-bottom: 1.25rem;
+          border-bottom: 1px solid var(--border-color-light);
+          padding-bottom: 0.75rem;
+        }
+
+        .ai-badge {
+          display: inline-block;
+          background-color: rgba(58, 134, 200, 0.1);
+          color: var(--accent-color);
+          padding: 0.2rem 0.6rem;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          margin-bottom: 0.5rem;
+        }
+
+        .ai-facts-header h3 {
+          font-size: 1.2rem;
+          color: var(--primary-color);
+          margin-bottom: 0.25rem;
+        }
+
+        .ai-facts-header p {
+          font-size: 0.85rem;
+          color: #6b7280;
+        }
+
+        .ai-facts-table-wrapper {
+          overflow-x: auto;
+        }
+
+        .ai-facts-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+          font-size: 0.9rem;
+        }
+
+        .ai-facts-table th {
+          width: 30%;
+          color: #4b5563;
+          font-weight: 700;
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid #f3f4f6;
+          vertical-align: top;
+        }
+
+        .ai-facts-table td {
+          color: var(--text-dark);
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid #f3f4f6;
+        }
+
+        .citation-link {
+          color: var(--accent-color);
+          text-decoration: underline;
+          font-weight: 600;
+        }
+
+        .citation-link:hover {
+          color: var(--primary-color);
+        }
+      
+      </style>
+    </section>
+  </main>
+  <footer
+    class="site-footer"
+  >
+    <div
+      class="container footer-container"
+    >
+      <div
+        class="grid grid-3 footer-grid"
+      >
+        <div
+          class="footer-col brand-col"
+        >
+          <h3
+            class="footer-logo"
+          >
+            Tiruppur Test Shop
+          </h3>
+          <p
+            class="footer-tagline"
+          >
+            Test Tagline
+          </p>
+        </div>
+        <div
+          class="footer-col"
+        >
+          <h4>
+            Hours & Contact
+          </h4>
+          <ul
+            class="footer-links"
+          >
+            <li>
+              <strong>
+                Phone:
+              </strong>
+               
+              +919999999999
+            </li>
+            <li>
+              <strong>
+                Business Hours:
+              </strong>
+              <ul
+                class="sub-hours"
+              >
+                <li
+                  style="text-transform: capitalize;"
+                >
+                  mon-sat
+                  : 
+                  9:00-18:00
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div
+          class="footer-col"
+        >
+          <h4>
+            Location
+          </h4>
+          <p
+            class="footer-address"
+          >
+            Tiruppur TN
+          </p>
+          <a
+            class="btn btn-secondary btn-sm footer-map-btn"
+            href="https://maps.google.com"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View on Google Maps
+          </a>
+        </div>
+      </div>
+      <div
+        class="footer-bottom"
+      >
+        <p>
+          © 
+          2026
+           
+          Tiruppur Test Shop
+          . All rights reserved.
+        </p>
+        <p
+          class="credit-tag"
+        >
+          Powered by Bizzap Local Sites
+        </p>
+      </div>
+    </div>
+    <style>
+      
+        .site-footer {
+          background-color: var(--primary-color);
+          color: #9ca3af;
+          padding: 4rem 0 2rem 0;
+          border-top: 1px solid var(--border-color-dark);
+          text-align: left;
+        }
+
+        .footer-grid {
+          margin-bottom: 3rem;
+          gap: var(--space-lg);
+        }
+
+        .footer-col h4 {
+          color: white;
+          margin-bottom: 1.5rem;
+          font-size: 1.15rem;
+          position: relative;
+          padding-bottom: 0.5rem;
+        }
+
+        .footer-col h4::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 30px;
+          height: 2px;
+          background-color: var(--accent-color);
+        }
+
+        .footer-logo {
+          color: white;
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+
+        .footer-socials {
+          display: flex;
+          gap: 1rem;
+        }
+
+        .social-link {
+          font-size: 0.9rem;
+          color: var(--accent-color);
+          font-weight: 600;
+        }
+
+        .social-link:hover {
+          color: white;
+        }
+
+        .footer-links {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          font-size: 0.95rem;
+        }
+
+        .footer-links strong {
+          color: #e5e7eb;
+        }
+
+        .sub-hours {
+          list-style: none;
+          margin-top: 0.25rem;
+          padding-left: 0.5rem;
+          color: #6b7280;
+        }
+
+        .footer-address {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-bottom: 1.25rem;
+          color: #d1d5db;
+        }
+
+        .footer-map-btn {
+          border-color: rgba(255, 255, 255, 0.2);
+          color: white;
+          font-size: 0.85rem;
+          padding: 0.5rem 1rem;
+        }
+
+        .footer-map-btn:hover {
+          background-color: white;
+          color: var(--primary-color);
+        }
+
+        .footer-bottom {
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          padding-top: 2rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          font-size: 0.85rem;
+        }
+
+        @media (min-width: 768px) {
+          .footer-bottom {
+            flex-direction: row;
+          }
+        }
+
+        .credit-tag {
+          color: #4b5563;
+        }
+      
+    </style>
+  </footer>
+</div>
+`;
+
+exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = `
+<div
+  class="template-shop"
+>
+  <header
+    class="site-header"
+  >
+    <div
+      class="container header-container"
+    >
+      <a
+        class="site-logo-link"
+        href="#"
+      >
+        <span
+          class="site-logo-text"
+        >
+          Tiruppur Test Shop
+        </span>
+      </a>
+      <button
+        aria-label="Toggle menu"
+        class="mobile-menu-toggle"
+      >
+        <svg
+          fill="currentColor"
+          height="20"
+          viewBox="0 0 448 512"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+          />
+        </svg>
+      </button>
+      <nav
+        class="site-nav "
+      >
+        <ul
+          class="nav-list"
+        >
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              Home
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              About
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link-btn"
+            >
+              Contact
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div
+        class="header-cta"
+      >
+        <a
+          class="btn btn-primary header-call-btn"
+          href="tel:+919999999999"
+        >
+          Call: 
+          +919999999999
+        </a>
+      </div>
+    </div>
+    <style>
+      
+        .site-header {
+          position: sticky;
+          top: 0;
+          left: 0;
+          right: 0;
+          background-color: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--border-color-light);
+          z-index: 1000;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .header-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 70px;
+        }
+
+        .site-logo-link {
+          display: flex;
+          align-items: center;
+        }
+
+        .site-logo-img {
+          max-height: 45px;
+          width: auto;
+        }
+
+        .site-logo-text {
+          font-family: var(--font-head);
+          font-weight: 800;
+          font-size: 1.4rem;
+          color: var(--primary-color);
+          letter-spacing: -0.02em;
+        }
+
+        .mobile-menu-toggle {
+          display: none;
+          background: transparent;
+          border: none;
+          color: var(--primary-color);
+          cursor: pointer;
+        }
+
+        .site-nav {
+          display: flex;
+        }
+
+        .nav-list {
+          display: flex;
+          list-style: none;
+          gap: 2rem;
+        }
+
+        .nav-link-btn {
+          background: none;
+          border: none;
+          font-family: var(--font-body);
+          font-weight: 600;
+          font-size: 0.95rem;
+          color: #4b5563;
+          cursor: pointer;
+          padding: 0.5rem 0;
+          position: relative;
+          transition: color var(--transition-fast);
+        }
+
+        .nav-link-btn:hover {
+          color: var(--accent-color);
+        }
+
+        .nav-link-btn::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: var(--accent-color);
+          transition: width var(--transition-fast);
+        }
+
+        .nav-link-btn:hover::after {
+          width: 100%;
+        }
+
+        .header-cta {
+          display: flex;
+        }
+
+        .header-call-btn {
+          padding: 0.5rem 1.2rem;
+          font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+          .mobile-menu-toggle {
+            display: block;
+          }
+
+          .site-nav {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color-light);
+            padding: 1.5rem var(--space-md);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+          }
+
+          .site-nav.nav-open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+
+          .nav-list {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+          }
+
+          .header-cta {
+            display: none;
+          }
+        }
+      
+    </style>
+  </header>
+  <main>
+    <section
+      class="hero-section"
+    >
+      <div
+        class="container hero-container"
+      >
+        <div
+          class="hero-content animate-fade-in"
+        >
+          <span
+            class="hero-badge"
+          >
+            Garment Maker
+          </span>
+          <h1>
+            Welcome to Test
+          </h1>
+          <p>
+            Sub welcome
+          </p>
+          <div
+            class="hero-actions"
+          >
+            <button
+              class="btn btn-primary btn-lg-size"
+            >
+              Inquire
+            </button>
+            <a
+              class="btn btn-secondary btn-lg-size"
+              href="tel:+919999999999"
+            >
+              Call Now
+            </a>
+          </div>
+        </div>
+        <div
+          class="hero-image-container animate-fade-in"
+        >
+          <img
+            alt="Tiruppur Test Shop"
+            class="hero-image"
+            src="test.jpg"
+          />
+          <div
+            class="hero-image-backdrop"
+          />
+        </div>
+      </div>
+      <style>
+        
+        .hero-section {
+          background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(243,244,246,1) 100%);
+          position: relative;
+          overflow: hidden;
+          padding: 5rem 0;
+          border-bottom: 1px solid var(--border-color-light);
+        }
+
+        .hero-container {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--space-lg);
+          align-items: center;
+        }
+
+        @media (min-width: 992px) {
+          .hero-container {
+            grid-template-columns: 1.2fr 1fr;
+            padding: 4rem var(--space-md);
+          }
+        }
+
+        .hero-content {
+          text-align: left;
+          max-width: 650px;
+        }
+
+        .hero-badge {
+          display: inline-block;
+          background-color: rgba(58, 134, 200, 0.1);
+          color: var(--accent-color);
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 1.25rem;
+        }
+
+        .hero-content h1 {
+          color: var(--primary-color);
+          margin-bottom: 1.25rem;
+        }
+
+        .hero-content p {
+          color: #4b5563;
+          margin-bottom: 2rem;
+          font-size: 1.2rem;
+          line-height: 1.6;
+        }
+
+        .hero-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .btn-lg-size {
+          padding: 0.9rem 2.2rem;
+          font-size: 1.05rem;
+        }
+
+        .hero-image-container {
+          position: relative;
+          width: 100%;
+          border-radius: var(--border-radius-lg);
+          overflow: hidden;
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .hero-image {
+          width: 100%;
+          height: auto;
+          object-fit: cover;
+          max-height: 480px;
+          border-radius: var(--border-radius-lg);
+          z-index: 2;
+          position: relative;
+          transition: transform var(--transition-normal);
+        }
+
+        .hero-image-container:hover .hero-image {
+          transform: scale(1.02);
+        }
+
+        .hero-image-backdrop {
+          position: absolute;
+          top: 10%;
+          left: 10%;
+          width: 90%;
+          height: 90%;
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+          border-radius: var(--border-radius-lg);
+          opacity: 0.15;
+          z-index: 1;
+        }
+      
+      </style>
+    </section>
+    <section
+      class="about-section section-padding"
+      id="about"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="grid grid-2 about-grid"
+        >
+          <div
+            class="about-text-content"
+          >
+            <span
+              class="section-subtitle"
+            >
+              Our Profile
+            </span>
+            <h2
+              class="about-title"
+            >
+              About 
+              Tiruppur Test Shop
+            </h2>
+            <div
+              class="about-divider"
+            />
+            <p
+              class="about-description"
+            >
+              About us text
+            </p>
+          </div>
+          <div
+            class="about-stats-container"
+          >
+            <div
+              class="grid grid-2 stats-subgrid"
+            >
+              <div
+                class="card stat-card text-center"
+              >
+                <span
+                  class="stat-value"
+                >
+                  10
+                </span>
+                <span
+                  class="stat-key"
+                >
+                  Exports
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .about-section {
+          background-color: #ffffff;
+        }
+
+        .about-grid {
+          align-items: center;
+          gap: var(--space-lg);
+        }
+
+        .section-subtitle {
+          color: var(--accent-color);
+          font-weight: 700;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          letter-spacing: 0.1em;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .about-title {
+          color: var(--primary-color);
+          font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+          margin-bottom: 1rem;
+        }
+
+        .about-divider {
+          width: 50px;
+          height: 3px;
+          background-color: var(--accent-color);
+          margin-bottom: 1.5rem;
+          border-radius: 2px;
+        }
+
+        .about-description {
+          color: #4b5563;
+          font-size: 1.05rem;
+          line-height: 1.8;
+          white-space: pre-line;
+        }
+
+        .stat-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem 1rem;
+          border-radius: var(--border-radius-md);
+          background: linear-gradient(135deg, #ffffff 0%, rgba(243,244,246,0.3) 100%);
+          border-left: 4px solid var(--accent-color);
+        }
+
+        .text-center {
+          text-align: center;
+        }
+
+        .stat-value {
+          font-family: var(--font-head);
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: var(--primary-color);
+          line-height: 1;
+          margin-bottom: 0.5rem;
+        }
+
+        .stat-key {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #6b7280;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .stats-subgrid {
+          gap: var(--space-sm);
+        }
+      
+      </style>
+    </section>
+    <section
+      class="section-padding text-center"
+      style="background-color: rgb(255, 255, 255);"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="section-header"
+        >
+          <h2>
+            Contact Us & Orders
+          </h2>
+          <p>
+            Place an order or send us an inquiry. We will get back to you shortly.
+          </p>
+        </div>
+        <div
+          class="contact-form-container card"
+          id="contact-form-section"
+        >
+          <form
+            class="contact-form"
+          >
+            <div
+              class="form-group"
+            >
+              <label
+                for="name"
+              >
+                Full Name *
+              </label>
+              <input
+                id="name"
+                name="name"
+                placeholder="e.g. Kumar"
+                required=""
+                type="text"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="phone"
+              >
+                Mobile Number *
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                placeholder="e.g. +91 98765 43210"
+                required=""
+                type="tel"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="email"
+              >
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                placeholder="e.g. name@example.com"
+                type="email"
+                value=""
+              />
+            </div>
+            <div
+              class="form-group"
+            >
+              <label
+                for="message"
+              >
+                Message / Requirement *
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Describe what you are looking for..."
+                required=""
+                rows="4"
+              />
+            </div>
+            <button
+              class="btn btn-primary w-full"
+              type="submit"
+            >
+              Send Inquiry
+            </button>
+          </form>
+          <style>
+            
+        .contact-form-container {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .contact-form {
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          text-align: left;
+        }
+
+        .form-group label {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+          padding: 0.75rem 1rem;
+          border: 1px solid var(--border-color-light);
+          border-radius: var(--border-radius-sm);
+          font-family: var(--font-body);
+          font-size: 1rem;
+          background-color: var(--bg-light);
+          transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--accent-color);
+          box-shadow: 0 0 0 3px rgba(58, 134, 200, 0.15);
+        }
+
+        .w-full {
+          width: 100%;
+        }
+
+        .form-success {
+          text-align: center;
+          padding: var(--space-md) 0;
+        }
+
+        .success-icon {
+          width: 64px;
+          height: 64px;
+          background-color: var(--success-color);
+          color: white;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 32px;
+          margin-bottom: var(--space-sm);
+        }
+
+        .form-success h3 {
+          margin-bottom: var(--space-xs);
+          color: var(--success-color);
+        }
+
+        .redirect-note {
+          font-size: 0.9rem;
+          color: #6b7280;
+          margin-top: 0.5rem;
+          font-style: italic;
+        }
+      
+          </style>
+        </div>
+      </div>
+    </section>
+    <section
+      aria-label="Structured Business Facts"
+      class="ai-facts-section"
+      id="ai-facts"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="card ai-facts-card"
+        >
+          <div
+            class="ai-facts-header"
+          >
+            <div
+              class="ai-badge"
+            >
+              GEO OPTIMIZED
+            </div>
+            <h3>
+              Verified Business Information Directory
+            </h3>
+            <p>
+              Structured factual catalog for AI search engines, RAG systems, and user inquiries.
+            </p>
+          </div>
+          <div
+            class="ai-facts-table-wrapper"
+          >
+            <table
+              class="ai-facts-table"
+              data-ai-optimized="true"
+            >
+              <tbody>
+                <tr>
+                  <th>
+                    Official Name
+                  </th>
+                  <td>
+                    <strong>
+                      Tiruppur Test Shop
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Industry Category
+                  </th>
+                  <td>
+                    Garment Maker
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Operational Base
+                  </th>
+                  <td>
+                    Tiruppur TN
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Primary Contact
+                  </th>
+                  <td>
+                    +919999999999
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Specializations & Capabilities
+                  </th>
+                  <td>
+                    Fast Delivery, Organic Cotton
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Supported Locales
+                  </th>
+                  <td>
+                    EN
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    Factual Source Citation
+                  </th>
+                  <td>
+                    <a
+                      class="citation-link"
+                      href="https://maps.google.com"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Google Business Profile (Verified Reference)
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .ai-facts-section {
+          background-color: var(--bg-light);
+          padding: var(--space-md) 0 var(--space-lg) 0;
+          border-top: 1px solid var(--border-color-light);
+        }
+
+        .ai-facts-card {
+          background-color: #ffffff;
+          border: 1px dashed var(--accent-color);
+          border-radius: var(--border-radius-md);
+          padding: var(--space-md);
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .ai-facts-header {
+          text-align: left;
+          margin-bottom: 1.25rem;
+          border-bottom: 1px solid var(--border-color-light);
+          padding-bottom: 0.75rem;
+        }
+
+        .ai-badge {
+          display: inline-block;
+          background-color: rgba(58, 134, 200, 0.1);
+          color: var(--accent-color);
+          padding: 0.2rem 0.6rem;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          margin-bottom: 0.5rem;
+        }
+
+        .ai-facts-header h3 {
+          font-size: 1.2rem;
+          color: var(--primary-color);
+          margin-bottom: 0.25rem;
+        }
+
+        .ai-facts-header p {
+          font-size: 0.85rem;
+          color: #6b7280;
+        }
+
+        .ai-facts-table-wrapper {
+          overflow-x: auto;
+        }
+
+        .ai-facts-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+          font-size: 0.9rem;
+        }
+
+        .ai-facts-table th {
+          width: 30%;
+          color: #4b5563;
+          font-weight: 700;
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid #f3f4f6;
+          vertical-align: top;
+        }
+
+        .ai-facts-table td {
+          color: var(--text-dark);
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid #f3f4f6;
+        }
+
+        .citation-link {
+          color: var(--accent-color);
+          text-decoration: underline;
+          font-weight: 600;
+        }
+
+        .citation-link:hover {
+          color: var(--primary-color);
+        }
+      
+      </style>
+    </section>
+  </main>
+  <footer
+    class="site-footer"
+  >
+    <div
+      class="container footer-container"
+    >
+      <div
+        class="grid grid-3 footer-grid"
+      >
+        <div
+          class="footer-col brand-col"
+        >
+          <h3
+            class="footer-logo"
+          >
+            Tiruppur Test Shop
+          </h3>
+          <p
+            class="footer-tagline"
+          >
+            Test Tagline
+          </p>
+        </div>
+        <div
+          class="footer-col"
+        >
+          <h4>
+            Hours & Contact
+          </h4>
+          <ul
+            class="footer-links"
+          >
+            <li>
+              <strong>
+                Phone:
+              </strong>
+               
+              +919999999999
+            </li>
+            <li>
+              <strong>
+                Business Hours:
+              </strong>
+              <ul
+                class="sub-hours"
+              >
+                <li
+                  style="text-transform: capitalize;"
+                >
+                  mon-sat
+                  : 
+                  9:00-18:00
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div
+          class="footer-col"
+        >
+          <h4>
+            Location
+          </h4>
+          <p
+            class="footer-address"
+          >
+            Tiruppur TN
+          </p>
+          <a
+            class="btn btn-secondary btn-sm footer-map-btn"
+            href="https://maps.google.com"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View on Google Maps
+          </a>
+        </div>
+      </div>
+      <div
+        class="footer-bottom"
+      >
+        <p>
+          © 
+          2026
+           
+          Tiruppur Test Shop
+          . All rights reserved.
+        </p>
+        <p
+          class="credit-tag"
+        >
+          Powered by Bizzap Local Sites
+        </p>
+      </div>
+    </div>
+    <style>
+      
+        .site-footer {
+          background-color: var(--primary-color);
+          color: #9ca3af;
+          padding: 4rem 0 2rem 0;
+          border-top: 1px solid var(--border-color-dark);
+          text-align: left;
+        }
+
+        .footer-grid {
+          margin-bottom: 3rem;
+          gap: var(--space-lg);
+        }
+
+        .footer-col h4 {
+          color: white;
+          margin-bottom: 1.5rem;
+          font-size: 1.15rem;
+          position: relative;
+          padding-bottom: 0.5rem;
+        }
+
+        .footer-col h4::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 30px;
+          height: 2px;
+          background-color: var(--accent-color);
+        }
+
+        .footer-logo {
+          color: white;
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+
+        .footer-socials {
+          display: flex;
+          gap: 1rem;
+        }
+
+        .social-link {
+          font-size: 0.9rem;
+          color: var(--accent-color);
+          font-weight: 600;
+        }
+
+        .social-link:hover {
+          color: white;
+        }
+
+        .footer-links {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          font-size: 0.95rem;
+        }
+
+        .footer-links strong {
+          color: #e5e7eb;
+        }
+
+        .sub-hours {
+          list-style: none;
+          margin-top: 0.25rem;
+          padding-left: 0.5rem;
+          color: #6b7280;
+        }
+
+        .footer-address {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-bottom: 1.25rem;
+          color: #d1d5db;
+        }
+
+        .footer-map-btn {
+          border-color: rgba(255, 255, 255, 0.2);
+          color: white;
+          font-size: 0.85rem;
+          padding: 0.5rem 1rem;
+        }
+
+        .footer-map-btn:hover {
+          background-color: white;
+          color: var(--primary-color);
+        }
+
+        .footer-bottom {
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          padding-top: 2rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          font-size: 0.85rem;
+        }
+
+        @media (min-width: 768px) {
+          .footer-bottom {
+            flex-direction: row;
+          }
+        }
+
+        .credit-tag {
+          color: #4b5563;
+        }
+      
+    </style>
+  </footer>
+</div>
+`;

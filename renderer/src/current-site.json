@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "slug": "sri-vinayak-cotsyn",
+  "template": "manufacturer",
+  "meta": {
+    "name": "Sri Vinayak Cotsyn",
+    "category": "Garment Manufacturer",
+    "tagline": "Export-Quality Knitwear from Tiruppur since 1998",
+    "description": "SIDCO Industrial Estate, Tiruppur, TN 641604",
+    "locale": [
+      "en"
+    ]
+  },
+  "theme": {
+    "primary": "#0A1628",
+    "accent": "#1889F6",
+    "font_head": "Montserrat",
+    "font_body": "Inter"
+  },
+  "contact": {
+    "phone": "+91 98765 43210",
+    "whatsapp": "+91 98765 43210",
+    "address": "SIDCO Industrial Estate, Tiruppur, TN 641604",
+    "geo": {
+      "lat": 11.108,
+      "lng": 77.341
+    },
+    "hours": {
+      "mon_sat": "09:30–18:30",
+      "sun": "closed"
+    },
+    "socials": {
+      "instagram": "",
+      "facebook": ""
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "headline": "Premium B2B Cotton Apparel Exporters",
+      "sub": "Sustainable, standard-compliant garment manufacturing for global brands.",
+      "cta": "Submit Inquiry",
+      "image": ""
+    },
+    {
+      "type": "about",
+      "body": "Established in 1998, Sri Vinayak Cotsyn is a leading manufacturer of knitwear garments, exporting premium fabric solutions ethically from Tiruppur.",
+      "stats": [
+        {
+          "k": "Rating",
+          "v": "4.2/5"
+        },
+        {
+          "k": "Reviews",
+          "v": "28"
+        },
+        {
+          "k": "Capacity",
+          "v": "50k/mo"
+        }
+      ]
+    },
+    {
+      "type": "catalog",
+      "items": [
+        {
+          "name": "Product Line #1",
+          "desc": "100% GOTS certified organic fabric apparel",
+          "moq": "500 pcs",
+          "price": null
+        },
+        {
+          "name": "Product Line #2",
+          "desc": "High capacity knitting and embroidery lines",
+          "moq": "500 pcs",
+          "price": null
+        },
+        {
+          "name": "Product Line #3",
+          "desc": "Moisture-wicking combed cotton activewear",
+          "moq": "500 pcs",
+          "price": null
+        }
+      ]
+    },
+    {
+      "type": "capabilities",
+      "items": [
+        "Quality Garments",
+        "Export Packaging",
+        "Timely Deliveries",
+        "Ethical Audited Factory"
+      ]
+    },
+    {
+      "type": "testimonials",
+      "items": [
+        {
+          "quote": "Excellent customer experience with Sri Vinayak Cotsyn. Highly recommended!",
+          "by": "Kumar S. (Local Client)"
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "title": "Sri Vinayak Cotsyn | Garment Exporter",
+    "meta_description": "Export-quality combed cotton knitwear manufacturer based in Tiruppur, GOTS organic certified.",
+    "keywords": [
+      "garment manufacturer",
+      "tiruppur"
+    ],
+    "localbusiness_jsonld": true
+  },
+  "source": {
+    "place_ref": "google-maps-1",
+    "generated_by": "claude-manual",
+    "human_approved": false
+  }
+}
