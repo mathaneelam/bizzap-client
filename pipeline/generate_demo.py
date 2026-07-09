@@ -213,7 +213,10 @@ def assemble_site_json(business, copy_data, template):
         "phone": business['phone'] or "+919999999999",
         "whatsapp": business['phone'] or "+919999999999",
         "address": business['address'],
-        "geo": {"lat": business['lat'], "lng": business['lng']},
+        "geo": {
+            "lat": business['lat'] if business['lat'] is not None else 11.1085,
+            "lng": business['lng'] if business['lng'] is not None else 77.3411
+        },
         "hours": {"mon_sat": "09:30–18:30", "sun": "closed"},
         "socials": {"instagram": "", "facebook": ""}
       },
