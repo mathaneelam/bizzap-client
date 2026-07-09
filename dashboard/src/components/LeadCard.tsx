@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import type { Lead, Business } from '../types'
+import OutreachModal from './OutreachModal'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -60,6 +61,7 @@ function statusPillClass(status: string) {
 
 export default function LeadCard({ lead, onUpdated, onToast }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [showOutreach, setShowOutreach] = useState(false)
   const [draft, setDraft] = useState(lead.copy_draft || '')
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -135,6 +137,11 @@ export default function LeadCard({ lead, onUpdated, onToast }: Props) {
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '✏️ Edit Copy Draft' : '📋 Generate Copy'}
           </button>
+          {(lead.status === 'demo_built' || lead.status === 'contacted') && (
+            <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => setShowOutreach(true)}>
+              💬 Outreach & Invoice
+            </button>
+          )}
           {b.website && (
             <a className="btn btn-ghost btn-sm" href={b.website} target="_blank" rel="noreferrer">
               🌐 Website
@@ -185,6 +192,15 @@ export default function LeadCard({ lead, onUpdated, onToast }: Props) {
             </div>
           </div>
         </div>
+      )}
+
+      {showOutreach && (
+        <OutreachModal
+          lead={lead}
+          onClose={() => setShowOutreach(false)}
+          onUpdated={onUpdated}
+          onToast={onToast}
+        />
       )}
     </>
   )
