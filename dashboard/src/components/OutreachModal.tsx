@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
-import type { Lead, Demo } from '../types'
+import type { Lead, Demo, LogActivity } from '../types'
 
 interface Props {
   lead: Lead
   onClose: () => void
   onUpdated: () => void
   onToast: (msg: string) => void
+  logActivity?: LogActivity
 }
 
 const PACKAGES = [
@@ -22,7 +23,7 @@ function cleanPhone(phone: string | null): string {
   return digits
 }
 
-export default function OutreachModal({ lead, onClose, onUpdated, onToast }: Props) {
+export default function OutreachModal({ lead, onClose, onUpdated, onToast, logActivity }: Props) {
   const [demo, setDemo] = useState<Demo | null>(null)
   const [loading, setLoading] = useState(true)
   const [pkg, setPkg] = useState('business')
@@ -138,6 +139,20 @@ export default function OutreachModal({ lead, onClose, onUpdated, onToast }: Pro
       setWaUrl(`https://wa.me/${phone}?text=${encodedMsg}`)
       setDealCreated(true)
       onToast('Success: Deal created & status updated!')
+      logActivity?.({
+        action: 'deal_created',
+        entityType: 'deal',
+        entityId: lead.id,
+        entityLabel: biz.name,
+        metadata: { package: pkg, amount: price, payment: paymentType },
+      })
+      logActivity?.({
+        action: 'lead_status_changed',
+        entityType: 'lead',
+        entityId: lead.id,
+        entityLabel: biz.name,
+        metadata: { status: 'contacted' },
+      })
       onUpdated()
     } catch (err: any) {
       onToast('Error: ' + err.message)
@@ -256,7 +271,10 @@ export default function OutreachModal({ lead, onClose, onUpdated, onToast }: Pro
             </div>
 
             <div className="card-actions" style={{ marginTop: 24 }}>
-              <a className="btn btn-primary" href={waUrl} target="_blank" rel="noreferrer" onClick={onClose}>
+              <a className="btn btn-primary" href={waUrl} target="_blank" rel="noreferrer" onClick={() => {
+                logActivity?.({ action: 'outreach_sent', entityType: 'lead', entityId: lead.id, entityLabel: biz.name })
+                onClose()
+              }}>
                 💬 Send on WhatsApp
               </a>
               <button className="btn btn-ghost" onClick={onClose}>Close Wizard</button>

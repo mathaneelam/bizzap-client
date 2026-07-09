@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Demo, Business } from '../types'
+import type { Demo, Business, LogActivity } from '../types'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -19,9 +19,10 @@ function getGmbUrl(business: Business): string {
 
 interface Props {
   onToast: (msg: string) => void
+  logActivity?: LogActivity
 }
 
-export default function DemosTab({ onToast }: Props) {
+export default function DemosTab({ onToast, logActivity }: Props) {
   const [demos, setDemos] = useState<Demo[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -49,6 +50,14 @@ export default function DemosTab({ onToast }: Props) {
       onToast('❌ Failed to update: ' + error.message)
     } else {
       onToast(demo.approved ? '⏸️ Demo unapproved' : '✅ Demo approved!')
+      if (!demo.approved) {
+        logActivity?.({
+          action: 'demo_approved',
+          entityType: 'demo',
+          entityId: demo.id,
+          entityLabel: demo.leads?.businesses?.name || demo.slug,
+        })
+      }
       fetchDemos()
     }
   }

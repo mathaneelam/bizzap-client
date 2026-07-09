@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Lead } from '../types'
+import type { Lead, LogActivity } from '../types'
 import LeadCard from '../components/LeadCard'
 
 interface Props {
   onToast: (msg: string) => void
+  logActivity?: LogActivity
 }
 
-export default function LeadsTab({ onToast }: Props) {
+export default function LeadsTab({ onToast, logActivity }: Props) {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('all')
@@ -83,7 +84,7 @@ export default function LeadsTab({ onToast }: Props) {
 
       <div className="grid grid-3">
         {filtered.map(lead => (
-          <LeadCard key={lead.id} lead={lead} onUpdated={fetchLeads} onToast={onToast} />
+          <LeadCard key={lead.id} lead={lead} onUpdated={fetchLeads} onToast={onToast} logActivity={logActivity} />
         ))}
       </div>
     </div>

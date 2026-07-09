@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
-import type { Lead, Business } from '../types'
+import type { Lead, Business, LogActivity } from '../types'
 import OutreachModal from './OutreachModal'
 
 function getGmbUrl(business: Business): string {
@@ -22,6 +22,7 @@ interface Props {
   lead: Lead
   onUpdated: () => void
   onToast: (msg: string) => void
+  logActivity?: LogActivity
 }
 
 function buildClaudePrompt(lead: Lead): string {
@@ -59,7 +60,7 @@ function statusPillClass(status: string) {
   return `pill pill-${status}`
 }
 
-export default function LeadCard({ lead, onUpdated, onToast }: Props) {
+export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Props) {
   const [showModal, setShowModal] = useState(false)
   const [showOutreach, setShowOutreach] = useState(false)
   const [draft, setDraft] = useState(lead.copy_draft || '')
@@ -200,6 +201,7 @@ export default function LeadCard({ lead, onUpdated, onToast }: Props) {
           onClose={() => setShowOutreach(false)}
           onUpdated={onUpdated}
           onToast={onToast}
+          logActivity={logActivity}
         />
       )}
     </>

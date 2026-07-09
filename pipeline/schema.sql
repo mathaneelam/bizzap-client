@@ -65,3 +65,34 @@ CREATE TABLE IF NOT EXISTS deals (
   due_date      DATE,
   paid_at       TIMESTAMP WITH TIME ZONE
 );
+
+-- 6. Staff Access Table (Dashboard auth gate)
+CREATE TABLE IF NOT EXISTS staff_access (
+  id           SERIAL PRIMARY KEY,
+  email        VARCHAR(255) UNIQUE NOT NULL,
+  name         VARCHAR(255),
+  avatar_url   TEXT,
+  role         VARCHAR(20) DEFAULT 'staff',    -- 'admin' | 'staff'
+  status       VARCHAR(20) DEFAULT 'pending',  -- 'pending' | 'approved' | 'rejected'
+  requested_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  approved_at  TIMESTAMP WITH TIME ZONE
+);
+
+-- Pre-approve the default admin so they are never blocked
+INSERT INTO staff_access (email, name, role, status)
+VALUES ('mathaneelam@gmail.com', 'Mathan', 'admin', 'approved')
+ON CONFLICT (email) DO NOTHING;
+
+-- 7. Activity Log Table (Audit trail of all dashboard actions)
+CREATE TABLE IF NOT EXISTS activity_log (
+  id           SERIAL PRIMARY KEY,
+  user_email   VARCHAR(255) NOT NULL,
+  user_name    VARCHAR(255),
+  action       VARCHAR(100) NOT NULL,  -- e.g. 'lead_status_changed', 'demo_approved'
+  entity_type  VARCHAR(50),            -- 'lead' | 'demo' | 'deal' | 'client' | 'staff'
+  entity_id    VARCHAR(100),           -- primary key of the affected row
+  entity_label TEXT,                   -- human-readable label, e.g. "Sri Balaji Textiles"
+  metadata     JSONB,                  -- extra structured context
+  created_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+

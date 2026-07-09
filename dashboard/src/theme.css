@@ -511,6 +511,186 @@ body::before {
   margin-top: 4px;
 }
 
+/* ─── Login / Access Gate ────────────────────────────────────── */
+.login-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.5);
+}
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.login-logo-icon { font-size: 26px; }
+.login-logo-text {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+.login-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.login-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+.login-google-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 13px 20px;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  color: #1a1a1a;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.login-google-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+.login-footer {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 22px;
+}
+.gate-icon { font-size: 48px; margin-bottom: 16px; }
+.gate-email {
+  display: inline-block;
+  margin: 18px 0 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* ─── User Menu (navbar) ─────────────────────────────────────── */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-menu-info { text-align: right; line-height: 1.2; }
+.user-menu-name { font-size: 13px; color: var(--text); font-weight: 500; }
+.user-menu-role {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── Avatars ────────────────────────────────────────────────── */
+.staff-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.staff-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--ivory);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ─── Staff Tab ──────────────────────────────────────────────── */
+.staff-list { display: flex; flex-direction: column; gap: 10px; }
+.staff-empty { color: var(--muted); font-size: 14px; padding: 4px 0 8px; }
+.staff-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+.staff-row-info { flex: 1; min-width: 0; }
+.staff-row-name {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.staff-row-email { font-size: 12px; color: var(--muted); }
+.staff-row-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.staff-role-badge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: var(--accent);
+  border: 1px solid var(--accent-25);
+  background: var(--accent-glow);
+}
+.staff-you-badge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.staff-locked { font-size: 12px; color: var(--muted); font-style: italic; }
+
+/* ─── Activity Feed ──────────────────────────────────────────── */
+.activity-feed { display: flex; flex-direction: column; gap: 2px; }
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+.activity-row:hover { background: var(--surface-1); }
+.activity-body { flex: 1; min-width: 0; }
+.activity-line { font-size: 14px; color: var(--text); }
+.activity-icon { margin-right: 6px; }
+.activity-entity { color: var(--accent); font-weight: 500; }
+.activity-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.activity-time { font-size: 12px; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
+
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .navbar { padding: 0 20px; }

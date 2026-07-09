@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Deal } from '../types'
+import type { Deal, LogActivity } from '../types'
 
 interface Props {
   onToast: (msg: string) => void
+  logActivity?: LogActivity
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -12,7 +13,7 @@ const STATUS_CLASSES: Record<string, string> = {
   due:  'pill-lost'
 }
 
-export default function DealsTab({ onToast }: Props) {
+export default function DealsTab({ onToast, logActivity }: Props) {
   const [deals, setDeals] = useState<Deal[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -39,6 +40,13 @@ export default function DealsTab({ onToast }: Props) {
       onToast('❌ Failed to update: ' + error.message)
     } else {
       onToast('✅ Deal marked as paid!')
+      logActivity?.({
+        action: 'deal_paid',
+        entityType: 'deal',
+        entityId: deal.id,
+        entityLabel: deal.clients?.leads?.businesses?.name || `Deal #${deal.id}`,
+        metadata: { amount: deal.amount },
+      })
       fetchDeals()
     }
   }

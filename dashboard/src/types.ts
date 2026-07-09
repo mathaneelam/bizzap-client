@@ -55,3 +55,39 @@ export interface Deal {
     leads?: Lead & { businesses?: Business }
   }
 }
+
+export interface StaffAccess {
+  id: number
+  email: string
+  name: string | null
+  avatar_url: string | null
+  role: 'admin' | 'staff'
+  status: 'pending' | 'approved' | 'rejected'
+  requested_at: string
+  approved_at: string | null
+}
+
+export interface ActivityLog {
+  id: number
+  user_email: string
+  user_name: string | null
+  action: string
+  entity_type: string | null
+  entity_id: string | null
+  entity_label: string | null
+  metadata: Record<string, unknown> | null
+  created_at: string
+}
+
+// Shared shape for the activity logger, passed down to tabs so any
+// meaningful action can be recorded against the current user.
+export interface LogActivityOptions {
+  action: string
+  entityType?: string
+  entityId?: string | number
+  entityLabel?: string
+  metadata?: Record<string, unknown>
+}
+
+export type LogActivity = (opts: LogActivityOptions) => void
+
