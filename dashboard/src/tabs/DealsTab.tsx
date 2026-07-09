@@ -5,6 +5,8 @@ import type { Deal, LogActivity } from '../types'
 interface Props {
   onToast: (msg: string) => void
   logActivity?: LogActivity
+  // 'active' shows unpaid deals (Deals & Invoices); 'archive' shows paid deals.
+  variant?: 'active' | 'archive'
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -13,7 +15,8 @@ const STATUS_CLASSES: Record<string, string> = {
   due:  'pill-lost'
 }
 
-export default function DealsTab({ onToast, logActivity }: Props) {
+export default function DealsTab({ onToast, logActivity, variant = 'active' }: Props) {
+  const isArchive = variant === 'archive'
   const [deals, setDeals] = useState<Deal[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -39,7 +42,7 @@ export default function DealsTab({ onToast, logActivity }: Props) {
     if (error) {
       onToast('❌ Failed to update: ' + error.message)
     } else {
-      onToast('✅ Deal marked as paid!')
+      onToast('✅ Paid — moved to Archive!')
       logActivity?.({
         action: 'deal_paid',
         entityType: 'deal',
@@ -53,18 +56,24 @@ export default function DealsTab({ onToast, logActivity }: Props) {
 
   useEffect(() => { fetchDeals() }, [])
 
-  const totalRevenue = deals.filter(d => d.status === 'paid').reduce((acc, d) => acc + Number(d.amount), 0)
-  const pending      = deals.filter(d => d.status !== 'paid').length
+  // Each deal lives in exactly one place: paid → Archive, everything else → active.
+  const visible = deals.filter(d => (isArchive ? d.status === 'paid' : d.status !== 'paid'))
+  const visibleValue = visible.reduce((acc, d) => acc + Number(d.amount), 0)
+  const paidCount = deals.filter(d => d.status === 'paid').length
 
   if (loading) return (
     <div className="state-box"><div className="spinner" /><span>Loading deals…</span></div>
   )
 
-  if (!deals.length) return (
+  if (!visible.length) return (
     <div className="state-box">
-      <span style={{ fontSize: 40 }}>💳</span>
-      <strong>No deals yet</strong>
-      <span>Run <code>python pipeline/outreach.py --slug &lt;slug&gt;</code> to generate your first payment link.</span>
+      <span style={{ fontSize: 40 }}>{isArchive ? '📦' : '💳'}</span>
+      <strong>{isArchive ? 'No archived deals yet' : 'No active deals'}</strong>
+      <span>
+        {isArchive
+          ? 'Deals you mark as paid will be archived here.'
+          : <>Complete <strong>Outreach &amp; Invoice</strong> on a demo to create a deal, or run <code>python pipeline/outreach.py --slug &lt;slug&gt;</code>.</>}
+      </span>
     </div>
   )
 
@@ -72,23 +81,42 @@ export default function DealsTab({ onToast, logActivity }: Props) {
     <div>
       {/* Stats Row */}
       <div className="stats-row">
-        <div className="stat-card">
-          <div className="stat-val" style={{ color: 'var(--green)' }}>
-            ₹{totalRevenue.toLocaleString('en-IN')}
-          </div>
-          <div className="stat-lbl">Revenue Collected</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-val">{deals.length}</div>
-          <div className="stat-lbl">Total Deals</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-val" style={{ color: 'var(--amber)' }}>{pending}</div>
-          <div className="stat-lbl">Outstanding</div>
-        </div>
+        {isArchive ? (
+          <>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: 'var(--green)' }}>
+                ₹{visibleValue.toLocaleString('en-IN')}
+              </div>
+              <div className="stat-lbl">Revenue Collected</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-val">{visible.length}</div>
+              <div className="stat-lbl">Archived Deals</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="stat-card">
+              <div className="stat-val">{visible.length}</div>
+              <div className="stat-lbl">Active Deals</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: 'var(--amber)' }}>
+                ₹{visibleValue.toLocaleString('en-IN')}
+              </div>
+              <div className="stat-lbl">Pending Value</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: 'var(--green)' }}>{paidCount}</div>
+              <div className="stat-lbl">Paid &amp; Archived</div>
+            </div>
+          </>
+        )}
       </div>
 
-      <p className="section-label">Deals — {deals.length} total</p>
+      <p className="section-label">
+        {isArchive ? `Archived (Paid) — ${visible.length}` : `Active Deals — ${visible.length}`}
+      </p>
 
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <table className="deal-table">
@@ -99,12 +127,12 @@ export default function DealsTab({ onToast, logActivity }: Props) {
               <th>Amount</th>
               <th>Type</th>
               <th>Status</th>
-              <th>Due Date</th>
+              <th>{isArchive ? 'Paid On' : 'Due Date'}</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {deals.map(deal => {
+            {visible.map(deal => {
               const biz = deal.clients?.leads?.businesses
               return (
                 <tr key={deal.id}>
@@ -120,11 +148,13 @@ export default function DealsTab({ onToast, logActivity }: Props) {
                     </span>
                   </td>
                   <td style={{ color: 'var(--muted)' }}>
-                    {deal.due_date ? new Date(deal.due_date).toLocaleDateString('en-IN') : '—'}
+                    {isArchive
+                      ? (deal.paid_at ? new Date(deal.paid_at).toLocaleDateString('en-IN') : '—')
+                      : (deal.due_date ? new Date(deal.due_date).toLocaleDateString('en-IN') : '—')}
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: 8 }}>
-                      {deal.status !== 'paid' && (
+                      {!isArchive && (
                         <button
                           className="btn btn-sm"
                           style={{ background: 'rgba(16,185,129,0.15)', color: 'var(--green)', border: '1px solid rgba(16,185,129,0.3)' }}

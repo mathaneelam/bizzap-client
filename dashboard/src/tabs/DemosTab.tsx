@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Demo, Business, LogActivity } from '../types'
+import type { Demo, Business, Lead, LogActivity } from '../types'
+import CopyDraftModal from '../components/CopyDraftModal'
+import OutreachModal from '../components/OutreachModal'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -25,19 +27,26 @@ interface Props {
 export default function DemosTab({ onToast, logActivity }: Props) {
   const [demos, setDemos] = useState<Demo[]>([])
   const [loading, setLoading] = useState(true)
+  const [editLead, setEditLead] = useState<Lead | null>(null)
+  const [outreachLead, setOutreachLead] = useState<Lead | null>(null)
 
   async function fetchDemos() {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('demos')
-      .select('*, leads(*, businesses(*))')
-      .order('built_at', { ascending: false })
+    // A demo whose lead already has a `clients` row has advanced to Deals & Invoices,
+    // so it leaves this stage — each card lives in exactly one tab.
+    const [demosRes, clientsRes] = await Promise.all([
+      supabase.from('demos').select('*, leads(*, businesses(*))').order('built_at', { ascending: false }),
+      supabase.from('clients').select('lead_id'),
+    ])
 
-    if (error) {
-      onToast('❌ Failed to load demos: ' + error.message)
-    } else {
-      setDemos(data as Demo[])
+    if (demosRes.error || clientsRes.error) {
+      onToast('❌ Failed to load demos: ' + (demosRes.error || clientsRes.error)!.message)
+      setLoading(false)
+      return
     }
+
+    const invoiced = new Set((clientsRes.data as { lead_id: number }[]).map(c => c.lead_id))
+    setDemos((demosRes.data as Demo[]).filter(d => !invoiced.has(d.lead_id)))
     setLoading(false)
   }
 
@@ -137,6 +146,16 @@ export default function DemosTab({ onToast, logActivity }: Props) {
                     🔗 View Demo
                   </a>
                 )}
+                {demo.leads && (
+                  <button className="btn btn-ghost btn-sm" onClick={() => setEditLead(demo.leads!)}>
+                    {demo.leads.copy_draft ? '✏️ Edit Copy Draft' : '📋 Generate Copy'}
+                  </button>
+                )}
+                {demo.leads && (
+                  <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => setOutreachLead(demo.leads!)}>
+                    💬 Outreach & Invoice
+                  </button>
+                )}
                 {biz && (
                   <a
                     className="btn btn-ghost btn-sm"
@@ -159,6 +178,25 @@ export default function DemosTab({ onToast, logActivity }: Props) {
           )
         })}
       </div>
+
+      {editLead && (
+        <CopyDraftModal
+          lead={editLead}
+          onClose={() => setEditLead(null)}
+          onUpdated={fetchDemos}
+          onToast={onToast}
+        />
+      )}
+
+      {outreachLead && (
+        <OutreachModal
+          lead={outreachLead}
+          onClose={() => setOutreachLead(null)}
+          onUpdated={fetchDemos}
+          onToast={onToast}
+          logActivity={logActivity}
+        />
+      )}
     </div>
   )
 }

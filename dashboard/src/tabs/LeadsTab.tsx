@@ -9,28 +9,37 @@ interface Props {
 }
 
 export default function LeadsTab({ onToast, logActivity }: Props) {
+  // Only leads that have NOT yet advanced down the pipeline live here:
+  // a `demos` row means it moved to Demos, a `clients` row means it moved to Deals.
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('all')
 
   async function fetchLeads() {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('leads')
-      .select('*, businesses(*)')
-      .order('score', { ascending: false })
+    const [leadsRes, demosRes, clientsRes] = await Promise.all([
+      supabase.from('leads').select('*, businesses(*)').order('score', { ascending: false }),
+      supabase.from('demos').select('lead_id'),
+      supabase.from('clients').select('lead_id'),
+    ])
 
-    if (error) {
-      onToast('❌ Failed to load leads: ' + error.message)
-    } else {
-      setLeads(data as Lead[])
+    if (leadsRes.error || demosRes.error || clientsRes.error) {
+      onToast('❌ Failed to load leads: ' + (leadsRes.error || demosRes.error || clientsRes.error)!.message)
+      setLoading(false)
+      return
     }
+
+    const moved = new Set<number>([
+      ...(demosRes.data as { lead_id: number }[]).map(d => d.lead_id),
+      ...(clientsRes.data as { lead_id: number }[]).map(c => c.lead_id),
+    ])
+    setLeads((leadsRes.data as Lead[]).filter(l => !moved.has(l.id)))
     setLoading(false)
   }
 
   useEffect(() => { fetchLeads() }, [])
 
-  const statuses = ['all', 'new', 'demo_built', 'contacted', 'won', 'lost']
+  const statuses = ['all', 'new', 'lost']
   const filtered = filter === 'all' ? leads : leads.filter(l => l.status === filter)
 
   const totalLeads = leads.length
@@ -44,8 +53,8 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
   if (!leads.length) return (
     <div className="state-box">
       <span style={{ fontSize: 40 }}>📭</span>
-      <strong>No leads yet</strong>
-      <span>Run <code>python pipeline/score_leads.py --import-file pipeline/sample_raw_leads.json --score</code> to populate leads.</span>
+      <strong>No leads waiting</strong>
+      <span>Every scraped lead has moved into Demos or Deals. Run <code>python pipeline/score_leads.py --import-file pipeline/sample_raw_leads.json --score</code> to add more.</span>
     </div>
   )
 
@@ -55,7 +64,7 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
       <div className="stats-row">
         <div className="stat-card">
           <div className="stat-val">{totalLeads}</div>
-          <div className="stat-lbl">Total Leads</div>
+          <div className="stat-lbl">Leads Waiting</div>
         </div>
         <div className="stat-card">
           <div className="stat-val" style={{ color: 'var(--green)' }}>{qualified}</div>
