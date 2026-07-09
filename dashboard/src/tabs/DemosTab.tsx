@@ -113,6 +113,16 @@ export default function DemosTab({ onToast }: Props) {
                     🔗 View Demo
                   </a>
                 )}
+                {biz?.place_ref && (
+                  <a
+                    className="btn btn-ghost btn-sm"
+                    href={`https://www.google.com/maps/place/${biz.place_ref}/`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    📍 GMB Link
+                  </a>
+                )}
                 <button
                   className={`btn btn-sm ${demo.approved ? 'btn-ghost' : 'btn-primary'}`}
                   onClick={() => toggleApprove(demo)}
