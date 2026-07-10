@@ -169,8 +169,19 @@ export default function DemosTab({ onToast, logActivity }: Props) {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  🌐 View Website
+                  ✨ AI Website
                 </a>
+                {biz?.website && (
+                  <a
+                    className="btn btn-ghost btn-sm"
+                    href={biz.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Compare with their current website"
+                  >
+                    🌐 Their Current Site
+                  </a>
+                )}
                 {demo.leads && (
                   <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => setOutreachLead(demo.leads!)}>
                     💬 Outreach & Invoice
