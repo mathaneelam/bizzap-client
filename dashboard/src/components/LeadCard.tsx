@@ -139,8 +139,14 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '🔄 Re-Generate' : '✨ Generate'}
           </button>
-          <a className="btn btn-ghost btn-sm" href={siteUrl} target="_blank" rel="noreferrer">
-            🌐 View Website
+          <a
+            className="btn btn-ghost btn-sm"
+            href={siteUrl}
+            target="_blank"
+            rel="noreferrer"
+            title="View generated website"
+          >
+            🌐
           </a>
           <button className="btn btn-ghost btn-sm" onClick={handleMoveToDemos} disabled={moving}>
             {moving ? 'Moving…' : '🖥️ Move to Demos'}
