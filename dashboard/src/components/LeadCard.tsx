@@ -124,28 +124,30 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
           &nbsp;·&nbsp; <span className={statusPillClass(lead.status)}>{lead.status.replace('_', ' ')}</span>
         </div>
 
-        {lead.copy_draft && (
-          <div className="meta-row" style={{ marginTop: 10 }}>
-            🌐 <a href={siteUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent)' }}>
-              {siteUrl.replace('https://', '')}
-            </a>
-            {lead.gen_count > 0 && (
-              <span className="pill pill-new" style={{ marginLeft: 8 }}>
-                generated ×{lead.gen_count}
-              </span>
-            )}
-          </div>
-        )}
+        <div className="meta-row" style={{ marginTop: 10 }}>
+          🌐 <a href={siteUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent)' }}>
+            {siteUrl.replace('https://', '')}
+          </a>
+          {lead.gen_count > 0 && (
+            <span className="pill pill-new" style={{ marginLeft: 8 }}>
+              generated ×{lead.gen_count}
+            </span>
+          )}
+        </div>
 
         <div className="card-actions">
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '🔄 Re-Generate' : '✨ Generate'}
           </button>
-          {lead.copy_draft && (
-            <a className="btn btn-ghost btn-sm" href={siteUrl} target="_blank" rel="noreferrer">
-              🌐 View Website
-            </a>
-          )}
+          <a
+            className="btn btn-ghost btn-sm"
+            href={siteUrl}
+            target="_blank"
+            rel="noreferrer"
+            title="View generated website"
+          >
+            🌐
+          </a>
           <button className="btn btn-ghost btn-sm" onClick={handleMoveToDemos} disabled={moving}>
             {moving ? 'Moving…' : '🖥️ Move to Demos'}
           </button>
