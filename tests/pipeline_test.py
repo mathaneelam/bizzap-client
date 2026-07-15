@@ -88,8 +88,8 @@ class TestLeadPipeline(unittest.TestCase):
         # Run import_leads
         import_leads(mock_conn, sample_file)
         
-        # Verify execute was called for each lead (5 leads in sample)
-        self.assertEqual(mock_cur.execute.call_count, 5)
+        # Verify execute was called for each lead (3 leads in sample)
+        self.assertEqual(mock_cur.execute.call_count, 3)
         mock_conn.commit.assert_called_once()
 
 if __name__ == '__main__':

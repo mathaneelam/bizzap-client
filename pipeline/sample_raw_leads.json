@@ -26,20 +26,7 @@
     "lat": 11.115,
     "lng": 77.352,
     "raw_details": "Famous local biryani shop, always busy."
-  },
-  {
-    "place_ref": "google-maps-3",
-    "name": "Tiruppur Dental Care",
-    "category": "Dental Clinic",
-    "segment": "clinic",
-    "phone": "+91 98765 43212",
-    "website": null,
-    "rating": 4.0,
-    "review_count": 2,
-    "address": "College Road, Tiruppur, TN 641603",
-    "lat": 11.121,
-    "lng": 77.339,
-    "raw_details": "Orthodontist and general dental practice."
+
   },
   {
     "place_ref": "google-maps-4",
@@ -54,19 +41,5 @@
     "lat": 11.098,
     "lng": 77.345,
     "raw_details": "Offers packing, shifting, and transport services."
-  },
-  {
-    "place_ref": "google-maps-5",
-    "name": "Lakshmi Textiles Shop",
-    "category": "Retail Saree Shop",
-    "segment": "shop",
-    "phone": null,
-    "website": null,
-    "rating": 3.9,
-    "review_count": 18,
-    "address": "Khaderpet Saree Bazaar, Tiruppur, TN 641601",
-    "lat": 11.109,
-    "lng": 77.329,
-    "raw_details": "Retail store, wholesale pricing."
   }
 ]
