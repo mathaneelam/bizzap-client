@@ -50,8 +50,8 @@ class TestDemoPipeline(unittest.TestCase):
         self.assertEqual(site_json['meta']['category'], "Garment Manufacturer")
         
         # Verify theme attributes
-        self.assertEqual(site_json['theme']['primary'], "#0A1628")
-        self.assertEqual(site_json['theme']['accent'], "#1889F6")
+        self.assertEqual(site_json['theme']['primary'], "#0B3D3D")
+        self.assertEqual(site_json['theme']['accent'], "#0D9488")
         
         # Verify sections mapping
         sections = site_json['sections']

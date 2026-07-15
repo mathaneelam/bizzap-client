@@ -8,6 +8,7 @@ export interface HeroSection extends SectionBase {
   sub?: string;
   cta?: string;
   image?: string;
+  variant?: 'centered' | 'split';
 }
 
 export interface AboutSection extends SectionBase {

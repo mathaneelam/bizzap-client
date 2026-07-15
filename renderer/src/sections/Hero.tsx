@@ -11,6 +11,20 @@ export default function Hero({ section, config }: HeroProps) {
   const sub = section.sub || meta.description;
   const ctaText = section.cta || 'Get in Touch';
   const imageUrl = section.image || '';
+  const variant = section.variant || 'split';
+
+  // Monogram from the business name — used for the themed panel when no photo exists.
+  const monogram = meta.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(w => w[0])
+    .join('')
+    .toUpperCase();
+
+  // "split" shows a side element (photo if present, else a themed graphic panel).
+  // "centered" is a single, centered column with no aside.
+  const showAside = variant === 'split';
 
   const handleCtaClick = () => {
     const contactSection = document.getElementById('contact-form-section');
@@ -20,7 +34,7 @@ export default function Hero({ section, config }: HeroProps) {
   };
 
   return (
-    <section className="hero-section">
+    <section className={`hero-section hero-${variant}`}>
       <div className="container hero-container">
         <div className="hero-content animate-fade-in">
           <span className="hero-badge">{meta.category}</span>
@@ -35,11 +49,18 @@ export default function Hero({ section, config }: HeroProps) {
             </a>
           </div>
         </div>
-        {imageUrl && (
-          <div className="hero-image-container animate-fade-in">
-            <img src={imageUrl} alt={meta.name} className="hero-image" />
-            <div className="hero-image-backdrop"></div>
-          </div>
+        {showAside && (
+          imageUrl ? (
+            <div className="hero-image-container animate-fade-in">
+              <img src={imageUrl} alt={meta.name} className="hero-image" />
+              <div className="hero-image-backdrop"></div>
+            </div>
+          ) : (
+            <div className="hero-graphic animate-fade-in" aria-hidden="true">
+              <span className="hero-monogram">{monogram}</span>
+              <span className="hero-graphic-label">{meta.category}</span>
+            </div>
+          )
         )}
       </div>
 
@@ -60,8 +81,12 @@ export default function Hero({ section, config }: HeroProps) {
         }
 
         @media (min-width: 992px) {
-          .hero-container {
-            grid-template-columns: ${imageUrl ? '1.2fr 1fr' : '1fr'};
+          .hero-split .hero-container {
+            grid-template-columns: 1.15fr 0.85fr;
+            padding: 4rem var(--space-md);
+          }
+          .hero-centered .hero-container {
+            grid-template-columns: 1fr;
             padding: 4rem var(--space-md);
           }
         }
@@ -69,6 +94,16 @@ export default function Hero({ section, config }: HeroProps) {
         .hero-content {
           text-align: left;
           max-width: 650px;
+        }
+
+        .hero-centered .hero-content {
+          text-align: center;
+          max-width: 780px;
+          margin: 0 auto;
+        }
+
+        .hero-centered .hero-actions {
+          justify-content: center;
         }
 
         .hero-badge {
@@ -140,6 +175,35 @@ export default function Hero({ section, config }: HeroProps) {
           border-radius: var(--border-radius-lg);
           opacity: 0.15;
           z-index: 1;
+        }
+
+        /* Themed graphic panel shown on split heroes when no photo is available. */
+        .hero-graphic {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          min-height: 300px;
+          border-radius: var(--border-radius-lg);
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.12), 0 10px 10px -5px rgba(0,0,0,0.05);
+        }
+
+        .hero-monogram {
+          font-family: var(--font-head);
+          font-weight: 700;
+          font-size: clamp(3.5rem, 8vw, 6rem);
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .hero-graphic-label {
+          color: rgba(255,255,255,0.85);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.9rem;
         }
       `}</style>
     </section>

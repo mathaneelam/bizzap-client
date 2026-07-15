@@ -156,14 +156,16 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
               🌐 Their Site
             </a>
           )}
-          <a
-            className="btn btn-ghost btn-sm"
-            href={getGmbUrl(b)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            📍 GMB Link
-          </a>
+          {b.place_ref && !b.place_ref.startsWith('google-maps-') && (
+            <a
+              className="btn btn-ghost btn-sm"
+              href={getGmbUrl(b)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              📍 GMB Link
+            </a>
+          )}
         </div>
       </div>
 

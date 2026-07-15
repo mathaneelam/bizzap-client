@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import './theme/tokens.css';
+import './theme/templates.css';
 import siteJson from './current-site.json';
 import { SiteConfig } from './types';
 import SEO from './components/SEO';

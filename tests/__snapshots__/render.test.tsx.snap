@@ -215,7 +215,7 @@ exports[`Templates Rendering & Snapshots > renders ManufacturerTemplate correctl
   </header>
   <main>
     <section
-      class="hero-section"
+      class="hero-section hero-split"
     >
       <div
         class="container hero-container"
@@ -281,8 +281,12 @@ exports[`Templates Rendering & Snapshots > renders ManufacturerTemplate correctl
         }
 
         @media (min-width: 992px) {
-          .hero-container {
-            grid-template-columns: 1.2fr 1fr;
+          .hero-split .hero-container {
+            grid-template-columns: 1.15fr 0.85fr;
+            padding: 4rem var(--space-md);
+          }
+          .hero-centered .hero-container {
+            grid-template-columns: 1fr;
             padding: 4rem var(--space-md);
           }
         }
@@ -290,6 +294,16 @@ exports[`Templates Rendering & Snapshots > renders ManufacturerTemplate correctl
         .hero-content {
           text-align: left;
           max-width: 650px;
+        }
+
+        .hero-centered .hero-content {
+          text-align: center;
+          max-width: 780px;
+          margin: 0 auto;
+        }
+
+        .hero-centered .hero-actions {
+          justify-content: center;
         }
 
         .hero-badge {
@@ -361,6 +375,35 @@ exports[`Templates Rendering & Snapshots > renders ManufacturerTemplate correctl
           border-radius: var(--border-radius-lg);
           opacity: 0.15;
           z-index: 1;
+        }
+
+        /* Themed graphic panel shown on split heroes when no photo is available. */
+        .hero-graphic {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          min-height: 300px;
+          border-radius: var(--border-radius-lg);
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.12), 0 10px 10px -5px rgba(0,0,0,0.05);
+        }
+
+        .hero-monogram {
+          font-family: var(--font-head);
+          font-weight: 700;
+          font-size: clamp(3.5rem, 8vw, 6rem);
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .hero-graphic-label {
+          color: rgba(255,255,255,0.85);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.9rem;
         }
       
       </style>
@@ -1409,7 +1452,7 @@ exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = 
   </header>
   <main>
     <section
-      class="hero-section"
+      class="hero-section hero-split"
     >
       <div
         class="container hero-container"
@@ -1475,8 +1518,12 @@ exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = 
         }
 
         @media (min-width: 992px) {
-          .hero-container {
-            grid-template-columns: 1.2fr 1fr;
+          .hero-split .hero-container {
+            grid-template-columns: 1.15fr 0.85fr;
+            padding: 4rem var(--space-md);
+          }
+          .hero-centered .hero-container {
+            grid-template-columns: 1fr;
             padding: 4rem var(--space-md);
           }
         }
@@ -1484,6 +1531,16 @@ exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = 
         .hero-content {
           text-align: left;
           max-width: 650px;
+        }
+
+        .hero-centered .hero-content {
+          text-align: center;
+          max-width: 780px;
+          margin: 0 auto;
+        }
+
+        .hero-centered .hero-actions {
+          justify-content: center;
         }
 
         .hero-badge {
@@ -1555,6 +1612,35 @@ exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = 
           border-radius: var(--border-radius-lg);
           opacity: 0.15;
           z-index: 1;
+        }
+
+        /* Themed graphic panel shown on split heroes when no photo is available. */
+        .hero-graphic {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          min-height: 300px;
+          border-radius: var(--border-radius-lg);
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.12), 0 10px 10px -5px rgba(0,0,0,0.05);
+        }
+
+        .hero-monogram {
+          font-family: var(--font-head);
+          font-weight: 700;
+          font-size: clamp(3.5rem, 8vw, 6rem);
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .hero-graphic-label {
+          color: rgba(255,255,255,0.85);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.9rem;
         }
       
       </style>
@@ -1692,6 +1778,110 @@ exports[`Templates Rendering & Snapshots > renders ShopTemplate correctly 1`] = 
 
         .stats-subgrid {
           gap: var(--space-sm);
+        }
+      
+      </style>
+    </section>
+    <section
+      class="capabilities-section section-padding"
+      id="capabilities"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="section-header"
+        >
+          <h2>
+            Our Capabilities & Standards
+          </h2>
+          <p>
+            We maintain top-tier processes, certifications, and operational expertise.
+          </p>
+        </div>
+        <div
+          class="grid grid-4 capabilities-grid"
+        >
+          <div
+            class="card capability-card"
+          >
+            <div
+              class="capability-icon-wrapper"
+            >
+              <svg
+                class="capability-icon"
+                fill="currentColor"
+                height="20"
+                viewBox="0 0 512 512"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+                />
+              </svg>
+            </div>
+            <span
+              class="capability-name"
+            >
+              Fast Delivery
+            </span>
+          </div>
+          <div
+            class="card capability-card"
+          >
+            <div
+              class="capability-icon-wrapper"
+            >
+              <svg
+                class="capability-icon"
+                fill="currentColor"
+                height="20"
+                viewBox="0 0 512 512"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+                />
+              </svg>
+            </div>
+            <span
+              class="capability-name"
+            >
+              Organic Cotton
+            </span>
+          </div>
+        </div>
+      </div>
+      <style>
+        
+        .capabilities-section {
+          background-color: #ffffff;
+        }
+
+        .capability-card {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.25rem var(--space-sm);
+          background-color: var(--bg-light);
+          border: 1px solid var(--border-color-light);
+          border-radius: var(--border-radius-sm);
+          text-align: left;
+        }
+
+        .capability-icon-wrapper {
+          color: var(--success-color);
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+        }
+
+        .capability-name {
+          font-weight: 600;
+          font-size: 1.05rem;
+          color: var(--primary-color);
         }
       
       </style>

@@ -61,10 +61,10 @@ Any business's site is versioned in git, editable by hand or script, rebuildable
 ```jsonc
 {
   "schema_version": 1,
-  "slug": "sri-vinayak-cotsyn",
+  "slug": "garment-manufacturer-tirupur",
   "template": "manufacturer",          // manufacturer | shop | clinic | food | services
   "meta": {
-    "name": "Sri Vinayak Cotsyn",
+    "name": "Garment Manufacturer Tirupur",
     "category": "Garment Manufacturer",
     "tagline": "Export-quality knitwear from Tiruppur since 1998",
     "description": "…",
@@ -225,7 +225,7 @@ renderer/
 
 - `Site.tsx` loads the injected `site.json`, applies theme tokens, renders `sections[]` in order.
 - Always emits: responsive layout, SEO meta tags, **schema.org LocalBusiness JSON-LD**, a `wa.me` WhatsApp button, and a contact form.
-- Build: `SITE_JSON=sites/sri-vinayak-cotsyn/site.json npm run build --prefix renderer` → `renderer/dist/`. Vite, npm, React — all free, local, no account needed.
+- Build: `SITE_JSON=sites/garment-manufacturer-tirupur/site.json npm run build --prefix renderer` → `renderer/dist/`. Vite, npm, React — all free, local, no account needed.
 - **Tests to write first:** schema validation against `site.schema.json`; one HTML snapshot per template; an SEO smoke test asserting `<title>`, meta description, and JSON-LD are present.
 
 ---
@@ -280,7 +280,7 @@ Cloudflare Pages free tier: **100 projects per account** (soft limit, raisable o
 | Target | Setup | Cost |
 |---|---|---|
 | **Demos** | One Pages project, e.g. `bizzap-demos` → auto-URL `bizzap-demos.pages.dev`. Every demo deploys to a subpath: `bizzap-demos.pages.dev/{slug}/` | ₹0 |
-| **Production (client sites)** | One Pages project **per client**, e.g. `srivinayak-site`. Gets a free `srivinayak-site.pages.dev` URL immediately. If/when the client wants their own domain, they buy it (~₹700–900/yr — bundled into the package price, funded by their 50% advance) and you attach it as a custom domain on their project — still free on your side. | ₹0 to you |
+| **Production (client sites)** | One Pages project **per client**, e.g. `garment-manufacturer-tirupur-site`. Gets a free `garment-manufacturer-tirupur-site.pages.dev` URL immediately. If/when the client wants their own domain, they buy it (~₹700–900/yr — bundled into the package price, funded by their 50% advance) and you attach it as a custom domain on their project — still free on your side. | ₹0 to you |
 
 You can run **up to ~100 client sites** this way before ever contacting Cloudflare about a limit increase — far beyond where you'll be when you decide it's worth paying for anything.
 
@@ -292,7 +292,7 @@ npm install -g wrangler
 wrangler pages deploy renderer/dist --project-name=bizzap-demos --branch=main
 
 # deploy a client's production site (its own project)
-wrangler pages deploy renderer/dist --project-name=srivinayak-site --branch=main
+wrangler pages deploy renderer/dist --project-name=garment-manufacturer-tirupur-site --branch=main
 # then attach their domain in the Cloudflare dashboard → free custom domain slot
 ```
 

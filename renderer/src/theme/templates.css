@@ -1,0 +1,88 @@
+/* Per-template visual identity.
+ *
+ * Each template renders a `.template-<segment>` wrapper. These rules give the five
+ * segments a genuinely different LOOK (hero treatment, corner radius, section
+ * rhythm, header dividers) instead of the previous identical layout. Colors still
+ * come from the per-business theme vars (--primary-color / --accent-color), so this
+ * composes with the deterministic palettes chosen in the pipeline.
+ *
+ * Specificity note: every selector is prefixed with the wrapper class, so it wins
+ * over the base rules the section components inject regardless of source order.
+ * color-mix() gracefully degrades to the neutral base hero where unsupported.
+ */
+
+/* ---------- Manufacturer: industrial, squared, structured ---------- */
+.template-manufacturer .hero-section {
+  background:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 55%),
+    repeating-linear-gradient(90deg, var(--border-color-light) 0 1px, transparent 1px 64px);
+  border-bottom: 3px solid var(--primary-color);
+}
+.template-manufacturer .card {
+  border-radius: 4px;
+}
+.template-manufacturer .section-header h2::after {
+  width: 100px;
+  height: 4px;
+  border-radius: 0;
+}
+
+/* ---------- Shop: friendly, rounded, soft ---------- */
+.template-shop .hero-section {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 12%, #ffffff) 0%, #ffffff 72%);
+}
+.template-shop .card {
+  border-radius: 20px;
+}
+.template-shop .section-header h2::after {
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+}
+
+/* ---------- Clinic: clean, airy, calm ---------- */
+.template-clinic .hero-section {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent-color) 8%, #ffffff) 0%, #ffffff 100%);
+  padding: 6rem 0;
+}
+.template-clinic .card {
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+.template-clinic .section-header h2::after {
+  width: 40px;
+  height: 2px;
+}
+
+/* ---------- Food: bold, warm, dark hero ---------- */
+.template-food .hero-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 140%);
+}
+.template-food .hero-content h1,
+.template-food .hero-content p {
+  color: #ffffff;
+}
+.template-food .hero-badge {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.16);
+}
+.template-food .card {
+  border-radius: 14px;
+}
+.template-food .section-header h2::after {
+  width: 64px;
+  height: 4px;
+}
+
+/* ---------- Services: modern, corporate gradient ---------- */
+.template-services .hero-section {
+  background: linear-gradient(135deg, #ffffff 0%, color-mix(in srgb, var(--accent-color) 10%, #ffffff) 100%);
+}
+.template-services .card {
+  border-radius: 12px;
+}
+.template-services .section-header h2::after {
+  width: 56px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}

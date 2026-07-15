@@ -16,7 +16,7 @@ const siteJsonArg = process.argv[2];
 if (!siteJsonArg) {
   console.error('\x1b[31mError: No site.json path provided.\x1b[0m');
   console.log('Usage: node build.js <path-to-site.json>');
-  console.log('Example: node build.js sites/sri-vinayak-cotsyn/site.json');
+  console.log('Example: node build.js sites/garment-manufacturer-tirupur/site.json');
   process.exit(1);
 }
 

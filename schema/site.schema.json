@@ -67,7 +67,8 @@
           "type": {
             "type": "string",
             "enum": ["hero", "about", "catalog", "capabilities", "gallery", "testimonials", "contact"]
-          }
+          },
+          "variant": { "type": "string", "enum": ["centered", "split"] }
         }
       }
     },

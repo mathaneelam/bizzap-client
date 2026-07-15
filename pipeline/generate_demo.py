@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import time
+import hashlib
 import argparse
 import shutil
 import subprocess
@@ -61,6 +62,151 @@ def slugify(name):
         slug = slug.replace("--", "-")
     return slug.strip("-")
 
+def _stable_index(key, n):
+    """Deterministic index in [0, n) from a string key.
+
+    Uses hashlib (NOT the built-in hash(), which is per-process salted) so the
+    same business always resolves to the same palette/variant across rebuilds.
+    """
+    if n <= 0:
+        return 0
+    return int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16) % n
+
+# Per-segment curated palettes. Each business gets ONE of these deterministically
+# via _stable_index(slug), so same-segment demos no longer all wear the same brand
+# colors. The first entry per segment preserves the original preset (no regression).
+# Accents are picked to keep white button text legible.
+SEGMENT_PALETTES = {
+    "manufacturer": [
+        {"name": "navy",     "primary": "#0A1628", "accent": "#1889F6", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "charcoal", "primary": "#1A1A2E", "accent": "#E8590C", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "slate",    "primary": "#1E293B", "accent": "#DC2626", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "teal",     "primary": "#0B3D3D", "accent": "#0D9488", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "forest",   "primary": "#14281D", "accent": "#2E7D32", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "steel",    "primary": "#263238", "accent": "#0288D1", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "rust",     "primary": "#2B1B17", "accent": "#B45309", "font_head": "Outfit",     "font_body": "Inter"},
+    ],
+    "shop": [
+        {"name": "espresso", "primary": "#3E2723", "accent": "#D84315", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "plum",     "primary": "#2D132C", "accent": "#C2185B", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "teal",     "primary": "#14343B", "accent": "#E64A19", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "indigo",   "primary": "#1E1B4B", "accent": "#DB2777", "font_head": "Outfit",     "font_body": "Inter"},
+    ],
+    "clinic": [
+        {"name": "emerald",  "primary": "#004D40", "accent": "#00897B", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "navy",     "primary": "#0B2A4A", "accent": "#2563EB", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "green",    "primary": "#14532D", "accent": "#0D9488", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "indigo",   "primary": "#1E3A8A", "accent": "#0284C7", "font_head": "Montserrat", "font_body": "Inter"},
+    ],
+    "food": [
+        {"name": "onyx",     "primary": "#212121", "accent": "#E65100", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "maroon",   "primary": "#3B0D0C", "accent": "#C0392B", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "cocoa",    "primary": "#2C1810", "accent": "#B7791F", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "herb",     "primary": "#1B3A2B", "accent": "#D9480F", "font_head": "Outfit",     "font_body": "Inter"},
+    ],
+    "services": [
+        {"name": "indigo",   "primary": "#1A237E", "accent": "#3949AB", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "navy",     "primary": "#0F172A", "accent": "#2563EB", "font_head": "Montserrat", "font_body": "Inter"},
+        {"name": "violet",   "primary": "#1E293B", "accent": "#7C3AED", "font_head": "Outfit",     "font_body": "Inter"},
+        {"name": "ocean",    "primary": "#0F2C33", "accent": "#0EA5E9", "font_head": "Montserrat", "font_body": "Inter"},
+    ],
+}
+
+# Hero layout variants (no photos available from the scrape, so both work purely
+# from theme colors). Chosen per business via slug hash for within-segment variety.
+HERO_VARIANTS = ["split", "centered"]
+
+# Order + set of sections per template. This is what makes the templates lay out
+# differently rather than all rendering hero/about/catalog/testimonials in lockstep.
+SECTION_ORDER = {
+    "manufacturer": ["hero", "about", "capabilities", "catalog", "testimonials"],
+    "shop":         ["hero", "catalog", "about", "capabilities", "testimonials"],
+    "clinic":       ["hero", "about", "capabilities", "testimonials", "catalog"],
+    "food":         ["hero", "about", "catalog", "capabilities", "testimonials"],
+    "services":     ["hero", "about", "capabilities", "catalog", "testimonials"],
+}
+
+# Segment-appropriate label for a catalog item when copy doesn't name offerings.
+CATALOG_LABEL = {
+    "manufacturer": "Product Line",
+    "shop": "Collection",
+    "clinic": "Treatment",
+    "food": "Signature Item",
+    "services": "Service",
+}
+
+# Fallback capability chips (used only when the copy step didn't supply any).
+# Multiple sets per segment, hash-picked, so same-segment demos differ.
+CAPABILITY_POOLS = {
+    "manufacturer": [
+        ["Quality Garments", "Export Packaging", "Timely Deliveries", "Ethical Audited Factory"],
+        ["In-house Knitting", "Eco-friendly Dyeing", "Precision Stitching", "Strict QA Inspection"],
+        ["Bulk Production", "Custom Branding", "On-time Shipping", "Compliance Certified"],
+    ],
+    "shop": [
+        ["Wide Selection", "Best Prices", "Home Delivery", "Trusted Brands"],
+        ["Latest Collections", "Easy Returns", "Billing Support", "In-store Assistance"],
+    ],
+    "clinic": [
+        ["Experienced Doctors", "Modern Equipment", "Hygienic Facility", "Affordable Care"],
+        ["Same-day Appointments", "Insurance Support", "Follow-up Care", "Certified Staff"],
+    ],
+    "food": [
+        ["Fresh Ingredients", "Hygienic Kitchen", "Fast Service", "Home Delivery"],
+        ["Authentic Recipes", "Cozy Ambience", "Party Orders", "Online Booking"],
+    ],
+    "services": [
+        ["Skilled Professionals", "On-time Service", "Fair Pricing", "Satisfaction Guaranteed"],
+        ["Free Consultation", "Custom Solutions", "Reliable Support", "Verified Experts"],
+    ],
+}
+
+# Fallback testimonials (used only when copy didn't supply real review quotes).
+# Rotated by slug hash so the demos don't share one identical line.
+TESTIMONIAL_POOLS = [
+    {"quote": "Working with {name} has been a great experience — professional, reliable, and quality-focused.", "by": "Ramesh K."},
+    {"quote": "{name} delivered exactly what we needed, on time and with real attention to detail.", "by": "Priya S."},
+    {"quote": "Highly professional team at {name}. Communication was smooth and the results exceeded expectations.", "by": "Arun M."},
+    {"quote": "We've relied on {name} for a while now and they consistently deliver. Strongly recommended.", "by": "Deepak R."},
+]
+
+def _build_catalog(copy_data, template):
+    """Named offerings from copy if available, else segment-labelled fallbacks."""
+    moq = "500 pcs" if template == "manufacturer" else None
+    price = None if template == "manufacturer" else "Enquire"
+    offerings = copy_data.get("offerings")
+    items = []
+    if isinstance(offerings, list) and offerings:
+        for off in offerings:
+            if isinstance(off, dict):
+                items.append({"name": off.get("name") or "Our Offering", "desc": off.get("desc", ""), "moq": moq, "price": price})
+            else:
+                items.append({"name": str(off), "desc": "", "moq": moq, "price": price})
+        return items
+    # Backward-compatible fallback for older drafts that only have "blurbs".
+    blurbs = copy_data.get("blurbs", ["Premium offering 1", "Premium offering 2", "Premium offering 3"])
+    label = CATALOG_LABEL.get(template, "Offering")
+    for idx, blurb in enumerate(blurbs, 1):
+        items.append({"name": f"{label} {idx}", "desc": blurb, "moq": moq, "price": price})
+    return items
+
+def _build_capabilities(copy_data, template, slug):
+    caps = copy_data.get("capabilities")
+    if isinstance(caps, list) and caps:
+        return [str(c) for c in caps][:6]
+    pool = CAPABILITY_POOLS.get(template, CAPABILITY_POOLS["services"])
+    return pool[_stable_index(slug + "-caps", len(pool))]
+
+def _build_testimonials(copy_data, business, slug):
+    tst = copy_data.get("testimonials")
+    if isinstance(tst, list) and tst:
+        out = [{"quote": t["quote"], "by": t.get("by", "Verified Client")}
+               for t in tst if isinstance(t, dict) and t.get("quote")]
+        if out:
+            return out
+    picked = TESTIMONIAL_POOLS[_stable_index(slug + "-tst", len(TESTIMONIAL_POOLS))]
+    return [{"quote": picked["quote"].format(name=business['name']), "by": picked["by"]}]
+
 def get_qualified_leads(conn):
     if not conn:
         return []
@@ -93,7 +239,9 @@ Ground every claim in these facts — do not invent certifications, awards, or f
 - Address: {address}
 - Rating: {rating}/5.0 based on {reviews} reviews on Google Maps.
 
-Return ONLY JSON matching this shape, no other text or markdown block wrappers:
+Make the copy specific to THIS business — vary wording, offerings, and capabilities
+so it does not read like a generic template. Return ONLY JSON matching this shape,
+no other text or markdown block wrappers:
 {{
   "tagline": "A single premium B2B or B2C tagline for this business",
   "hero_headline": "Bold, high-converting headline",
@@ -101,10 +249,14 @@ Return ONLY JSON matching this shape, no other text or markdown block wrappers:
   "about_body": "Detailed paragraph about their work, history, and commitment to quality.",
   "seo_title": "SEO Title (max 60 chars)",
   "seo_meta": "SEO Description (max 160 chars)",
-  "blurbs": [
-    "Short description (under 15 words) of product/service line 1",
-    "Short description (under 15 words) of product/service line 2",
-    "Short description (under 15 words) of product/service line 3"
+  "offerings": [
+    {{ "name": "Named product/service line", "desc": "Short description (under 15 words)" }},
+    {{ "name": "Named product/service line", "desc": "Short description (under 15 words)" }},
+    {{ "name": "Named product/service line", "desc": "Short description (under 15 words)" }}
+  ],
+  "capabilities": ["4 short capability/feature chips specific to this business"],
+  "testimonials": [
+    {{ "quote": "A realistic 1-2 sentence customer quote grounded in the rating; do NOT fabricate names of real people", "by": "First name + initial, e.g. 'Ramesh K.'" }}
   ]
 }}
 ======================================================================
@@ -132,70 +284,51 @@ def watch_for_copy_draft(draft_path):
 
 def assemble_site_json(business, copy_data, template):
     slug = slugify(business['name'])
-    
-    # 1. Base theme config
-    theme_presets = {
-        "manufacturer": {"primary": "#0A1628", "accent": "#1889F6", "font_head": "Montserrat", "font_body": "Inter"},
-        "shop": {"primary": "#3E2723", "accent": "#D84315", "font_head": "Outfit", "font_body": "Inter"},
-        "clinic": {"primary": "#004D40", "accent": "#00B0FF", "font_head": "Montserrat", "font_body": "Inter"},
-        "food": {"primary": "#212121", "accent": "#E65100", "font_head": "Outfit", "font_body": "Inter"},
-        "services": {"primary": "#1A237E", "accent": "#00E5FF", "font_head": "Montserrat", "font_body": "Inter"}
+
+    # 1. Deterministic per-business theme (stable across rebuilds via slug hash)
+    palettes = SEGMENT_PALETTES.get(template, SEGMENT_PALETTES["services"])
+    palette = palettes[_stable_index(slug, len(palettes))]
+    theme = {
+        "preset": palette["name"],
+        "primary": palette["primary"],
+        "accent": palette["accent"],
+        "font_head": palette["font_head"],
+        "font_body": palette["font_body"],
     }
-    theme = theme_presets.get(template, theme_presets["services"])
-    
-    # 2. Build sections based on template segment rules
-    sections = []
-    
-    # Hero section
-    sections.append({
+
+    # 2. Build each candidate section keyed by type; order is applied afterwards.
+    built = {}
+
+    # Hero — deterministic layout variant for within-segment variety
+    hero_variant = HERO_VARIANTS[_stable_index(slug + "-hero", len(HERO_VARIANTS))]
+    built["hero"] = {
         "type": "hero",
         "headline": copy_data.get("hero_headline"),
         "sub": copy_data.get("hero_sub"),
         "cta": "Submit Inquiry",
-        "image": ""
-    })
-    
-    # About section
+        "variant": hero_variant,
+        "image": copy_data.get("hero_image", "")
+    }
+
+    # About
     about_stats = [{"k": "Rating", "v": f"{business['rating']}/5"}, {"k": "Reviews", "v": str(business['review_count'])}]
     if template == "manufacturer":
         about_stats.append({"k": "Capacity", "v": "50k/mo"})
-    sections.append({
+    built["about"] = {
         "type": "about",
         "body": copy_data.get("about_body"),
         "stats": about_stats
-    })
-    
-    # Catalog section (map blurbs to catalog items)
-    blurbs = copy_data.get("blurbs", ["Premium offering 1", "Premium offering 2", "Premium offering 3"])
-    catalog_items = []
-    for idx, blurb in enumerate(blurbs, 1):
-        catalog_items.append({
-            "name": f"Product Line #{idx}" if template == "manufacturer" else f"Service Option #{idx}",
-            "desc": blurb,
-            "moq": "500 pcs" if template == "manufacturer" else None,
-            "price": "Enquire" if template != "manufacturer" else None
-        })
-        
-    sections.append({
-        "type": "catalog",
-        "items": catalog_items
-    })
-    
-    # Template-specific special sections
-    if template == "manufacturer":
-        sections.append({
-            "type": "capabilities",
-            "items": ["Quality Garments", "Export Packaging", "Timely Deliveries", "Ethical Audited Factory"]
-        })
-        
-    # Testimonials section
-    sections.append({
-        "type": "testimonials",
-        "items": [
-            {"quote": f"Excellent customer experience with {business['name']}. Highly recommended!", "by": "Kumar S. (Local Client)"}
-        ]
-    })
-    
+    }
+
+    # Catalog / Capabilities / Testimonials — prefer real copy, else varied fallbacks
+    built["catalog"] = {"type": "catalog", "items": _build_catalog(copy_data, template)}
+    built["capabilities"] = {"type": "capabilities", "items": _build_capabilities(copy_data, template, slug)}
+    built["testimonials"] = {"type": "testimonials", "items": _build_testimonials(copy_data, business, slug)}
+
+    # 3. Emit sections in this template's order (drives cross-segment layout)
+    order = SECTION_ORDER.get(template, SECTION_ORDER["services"])
+    sections = [built[t] for t in order if t in built]
+
     # Assemble complete site.json
     site_config = {
       "schema_version": 1,

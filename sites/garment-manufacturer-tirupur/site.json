@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "slug": "sri-vinayak-cotsyn",
+  "slug": "garment-manufacturer-tirupur",
   "template": "manufacturer",
   "meta": {
-    "name": "Sri Vinayak Cotsyn",
-    "category": "Garment Manufacturer",
-    "tagline": "Export-Quality Knitwear from Tiruppur since 1998",
-    "description": "SIDCO Industrial Estate, Tiruppur, TN 641604",
+    "name": "Garment Manufacturer Tirupur",
+    "category": "Manufacturer",
+    "tagline": "Leading garment manufacturers and suppliers in Tiruppur",
+    "description": "\ue0c8\nDoor No:14, 4th St, K V R Nagar, Karuvampalayam, Tiruppur, Andipalayam, Tamil Nadu 641604",
     "locale": [
       "en"
     ]
@@ -18,12 +18,12 @@
     "font_body": "Inter"
   },
   "contact": {
-    "phone": "+91 98765 43210",
-    "whatsapp": "+91 98765 43210",
-    "address": "SIDCO Industrial Estate, Tiruppur, TN 641604",
+    "phone": "09626660098",
+    "whatsapp": "09626660098",
+    "address": "\ue0c8\nDoor No:14, 4th St, K V R Nagar, Karuvampalayam, Tiruppur, Andipalayam, Tamil Nadu 641604",
     "geo": {
-      "lat": 11.108,
-      "lng": 77.341
+      "lat": 11.1085,
+      "lng": 77.3411
     },
     "hours": {
       "mon_sat": "09:30\u201318:30",
@@ -37,22 +37,22 @@
   "sections": [
     {
       "type": "hero",
-      "headline": "Premium B2B Cotton Apparel Exporters",
-      "sub": "Sustainable, standard-compliant garment manufacturing for global brands.",
+      "headline": "Custom Garment Manufacturing & Apparel Solutions",
+      "sub": "Knitwear, sportswear, fashion wear, and corporate uniforms engineered for quality.",
       "cta": "Submit Inquiry",
       "image": ""
     },
     {
       "type": "about",
-      "body": "Established in 1998, Sri Vinayak Cotsyn is a leading manufacturer of knitwear garments, exporting premium fabric solutions ethically from Tiruppur.",
+      "body": "Garment Manufacturer Tirupur is a full-service production house in Tiruppur. We support global retailers, fashion brands, and corporate clients with state-of-the-art knitting, dyeing, printing, and sewing facilities.",
       "stats": [
         {
           "k": "Rating",
-          "v": "4.2/5"
+          "v": "5.0/5"
         },
         {
           "k": "Reviews",
-          "v": "28"
+          "v": "19"
         },
         {
           "k": "Capacity",
@@ -65,19 +65,19 @@
       "items": [
         {
           "name": "Product Line #1",
-          "desc": "100% GOTS certified organic fabric apparel",
+          "desc": "Fully integrated knitwear production facility",
           "moq": "500 pcs",
           "price": null
         },
         {
           "name": "Product Line #2",
-          "desc": "High capacity knitting and embroidery lines",
+          "desc": "Ethical labor and eco-friendly practices",
           "moq": "500 pcs",
           "price": null
         },
         {
           "name": "Product Line #3",
-          "desc": "Moisture-wicking combed cotton activewear",
+          "desc": "Fast turnarounds with low B2B MOQs",
           "moq": "500 pcs",
           "price": null
         }
@@ -96,22 +96,22 @@
       "type": "testimonials",
       "items": [
         {
-          "quote": "Excellent customer experience with Sri Vinayak Cotsyn. Highly recommended!",
+          "quote": "Excellent customer experience with Garment Manufacturer Tirupur. Highly recommended!",
           "by": "Kumar S. (Local Client)"
         }
       ]
     }
   ],
   "seo": {
-    "title": "Sri Vinayak Cotsyn | Garment Exporter",
-    "meta_description": "Export-quality combed cotton knitwear manufacturer based in Tiruppur, GOTS organic certified.",
+    "title": "Garment Manufacturer Tirupur | Custom Apparel Factory",
+    "meta_description": "Premier garment factory in Tiruppur, India. Custom clothing manufacturing, apparel exports, high-quality production.",
     "keywords": [
-      "garment manufacturer",
+      "manufacturer",
       "tiruppur"
     ]
   },
   "source": {
-    "place_ref": "google-maps-1",
+    "place_ref": "Garment+Manufacturer+Tirupur",
     "generated_by": "claude-manual",
     "human_approved": false
   }

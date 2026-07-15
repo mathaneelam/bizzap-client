@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import Hero from '../sections/Hero';
 import About from '../sections/About';
 import Catalog from '../sections/Catalog';
+import Capabilities from '../sections/Capabilities';
 import Gallery from '../sections/Gallery';
 import Testimonials from '../sections/Testimonials';
 import ContactForm from '../components/ContactForm';
@@ -27,6 +28,8 @@ export default function ShopTemplate({ config }: TemplateProps) {
               return <About key={idx} section={section} config={config} />;
             case 'catalog':
               return <Catalog key={idx} section={section} config={config} />;
+            case 'capabilities':
+              return <Capabilities key={idx} section={section} />;
             case 'gallery':
               return <Gallery key={idx} section={section} />;
             case 'testimonials':

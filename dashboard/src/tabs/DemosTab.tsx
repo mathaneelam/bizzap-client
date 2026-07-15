@@ -194,7 +194,7 @@ export default function DemosTab({ onToast, logActivity }: Props) {
                 >
                   ↩ Send Back for Fixes
                 </button>
-                {biz && (
+                {biz && biz.place_ref && !biz.place_ref.startsWith('google-maps-') && (
                   <a
                     className="btn btn-ghost btn-sm"
                     href={getGmbUrl(biz)}
