@@ -51,13 +51,19 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
 
   async function handleSaveDraft() {
     setSaving(true)
-    try {
-      JSON.parse(draft) // validate JSON
-    } catch {
-      onToast('⚠️ Invalid JSON. Please paste the exact Claude response.')
-      setSaving(false)
-      return
+    const trimmed = draft.trim()
+    const isHtml = trimmed.startsWith('<') || trimmed.toLowerCase().includes('<html>')
+
+    if (!isHtml) {
+      try {
+        JSON.parse(trimmed) // validate JSON if not HTML
+      } catch {
+        onToast('⚠️ Invalid format. Please paste the Claude JSON reply or raw HTML.')
+        setSaving(false)
+        return
+      }
     }
+
     const nextCount = (lead.gen_count ?? 0) + 1
     const { error } = await supabase
       .from('leads')
@@ -78,7 +84,7 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
       <div className="modal">
         <div className="modal-title">{b.name}</div>
         <div className="modal-sub">
-          1. Copy the prompt below → 2. Paste into Claude.ai → 3. Copy the JSON reply back here
+          1. Copy the prompt below → 2. Paste into Claude.ai → 3. Copy the JSON or HTML reply back here
         </div>
 
         <p className="section-label">Claude Prompt</p>
@@ -92,10 +98,10 @@ export default function CopyDraftModal({ lead, onClose, onUpdated, onToast }: Pr
           </a>
         </div>
 
-        <p className="section-label">Paste Claude's JSON Reply</p>
+        <p className="section-label">Paste Claude's JSON or HTML Reply</p>
         <textarea
           className="textarea"
-          placeholder={'{\n  "tagline": "...",\n  "hero_headline": "...",\n  ...\n}'}
+          placeholder={'{\n  "tagline": "...",\n  "hero_headline": "...",\n  ...\n}\n\n-- OR --\n\n<!DOCTYPE html>\n<html lang="en">\n  ...\n</html>'}
           value={draft}
           onChange={e => setDraft(e.target.value)}
         />

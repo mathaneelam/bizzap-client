@@ -35,6 +35,7 @@ interface Props {
   onUpdated: () => void
   onToast: (msg: string) => void
   logActivity?: LogActivity
+  isAdmin?: boolean
 }
 
 function scoreClass(score: number) {
@@ -47,13 +48,37 @@ function statusPillClass(status: string) {
   return `pill pill-${status}`
 }
 
-export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Props) {
+export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmin }: Props) {
   const [showModal, setShowModal] = useState(false)
   const [moving, setMoving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const b = lead.businesses!
   // Predictable generated-site URL (built by the pipeline from the saved copy draft).
   const siteUrl = `https://bizzap-demos.pages.dev/${slugify(b.name)}/`
+
+  async function handleDeleteBusiness() {
+    if (!window.confirm(`Are you sure you want to delete ${b.name}? This will remove the business, lead, and any generated demos from the database.`)) return
+    
+    setDeleting(true)
+    const { error } = await supabase
+      .from('businesses')
+      .delete()
+      .eq('id', b.id)
+      
+    setDeleting(false)
+    if (error) {
+      onToast('❌ Failed to delete business: ' + error.message)
+    } else {
+      onToast('🗑️ Business profile deleted.')
+      logActivity?.({
+        action: 'business_deleted',
+        entityType: 'lead',
+        entityLabel: b.name,
+      })
+      onUpdated()
+    }
+  }
 
   async function handleMoveToDemos() {
     setMoving(true)
@@ -122,16 +147,10 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
         <div className="meta-row">
           ⭐ {b.rating?.toFixed(1) || '—'} &nbsp;·&nbsp; {b.review_count || 0} reviews
           &nbsp;·&nbsp; <span className={statusPillClass(lead.status)}>{lead.status.replace('_', ' ')}</span>
-        </div>
-
-        <div className="meta-row" style={{ marginTop: 10 }}>
-          🌐 <a href={siteUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--accent)' }}>
-            {siteUrl.replace('https://', '')}
-          </a>
           {lead.gen_count > 0 && (
-            <span className="pill pill-new" style={{ marginLeft: 8 }}>
-              generated ×{lead.gen_count}
-            </span>
+            <>
+              &nbsp;·&nbsp; <span className="pill pill-new">generated ×{lead.gen_count}</span>
+            </>
           )}
         </div>
 
@@ -165,6 +184,17 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity }: Prop
             >
               📍 GMB Link
             </a>
+          )}
+          {isAdmin && (
+            <button 
+              className="btn btn-ghost btn-sm" 
+              onClick={handleDeleteBusiness} 
+              disabled={deleting}
+              style={{ color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
+              title="Delete business profile"
+            >
+              {deleting ? 'Deleting…' : '🗑 Delete'}
+            </button>
           )}
         </div>
       </div>

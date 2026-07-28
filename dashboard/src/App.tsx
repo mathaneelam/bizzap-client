@@ -153,7 +153,7 @@ export default function App() {
       </div>
 
       <main className="tab-content">
-        {tab === 'leads' && <LeadsTab onToast={showToast} logActivity={logger.logActivity} />}
+        {tab === 'leads' && <LeadsTab onToast={showToast} logActivity={logger.logActivity} isAdmin={isAdmin} />}
         {tab === 'demos' && <DemosTab onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'deals' && <DealsTab onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'activity' && <ActivityTab currentUser={staff} onToast={showToast} />}
