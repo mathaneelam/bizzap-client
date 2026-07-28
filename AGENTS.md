@@ -89,6 +89,7 @@ build yet" in `docs/technical-plan.md` §0.
   validation before a build is triggered. Fail loudly, never ship malformed data.
 - **Ask before spending.** Any step that would require a card, a paid signup,
   or exceeding a free-tier limit — stop and ask first.
+- **Segment Tabs in Dashboard.** Whenever scraping a new business category/segment (e.g. food, clinic), explicitly add it as a top-level filter tab in the React admin dashboard (parallel to "Garment") so leads can be isolated by industry.
 
 ## Full-Stack Transition (Step 2)
 
