@@ -40,7 +40,6 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
 
   useEffect(() => { fetchLeads() }, [])
 
-  const statuses = ['all', 'needs_fix', 'new', 'garment', 'lost']
   // `needs_fix` leads were sent back from Demos — surface them first so they get fixed immediately.
   const filtered = (filter === 'all' 
     ? leads 
