@@ -6,9 +6,10 @@ import LeadCard from '../components/LeadCard'
 interface Props {
   onToast: (msg: string) => void
   logActivity?: LogActivity
+  isAdmin?: boolean
 }
 
-export default function LeadsTab({ onToast, logActivity }: Props) {
+export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
   // Only leads that have NOT yet advanced down the pipeline live here:
   // a `demos` row means it moved to Demos, a `clients` row means it moved to Deals.
   const [leads, setLeads] = useState<Lead[]>([])
@@ -39,9 +40,13 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
 
   useEffect(() => { fetchLeads() }, [])
 
-  const statuses = ['all', 'needs_fix', 'new', 'lost']
+  const statuses = ['all', 'needs_fix', 'new', 'garment', 'lost']
   // `needs_fix` leads were sent back from Demos — surface them first so they get fixed immediately.
-  const filtered = (filter === 'all' ? leads : leads.filter(l => l.status === filter))
+  const filtered = (filter === 'all' 
+    ? leads 
+    : filter === 'garment'
+      ? leads.filter(l => l.businesses?.segment === 'manufacturer')
+      : leads.filter(l => l.status === filter))
     .slice()
     .sort((a, b) => (a.status === 'needs_fix' ? 0 : 1) - (b.status === 'needs_fix' ? 0 : 1) || b.score - a.score)
 
@@ -101,7 +106,7 @@ export default function LeadsTab({ onToast, logActivity }: Props) {
 
       <div className="grid grid-3">
         {filtered.map(lead => (
-          <LeadCard key={lead.id} lead={lead} onUpdated={fetchLeads} onToast={onToast} logActivity={logActivity} />
+          <LeadCard key={lead.id} lead={lead} onUpdated={fetchLeads} onToast={onToast} logActivity={logActivity} isAdmin={isAdmin} />
         ))}
       </div>
     </div>
