@@ -89,9 +89,20 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
         </div>
       </div>
 
+      {/* Segment Tabs */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+        <button
+          className={`btn ${filter === 'garment' ? 'btn-primary' : 'btn-ghost'}`}
+          onClick={() => setFilter('garment')}
+          style={{ fontSize: '15px', padding: '8px 16px', fontWeight: 500 }}
+        >
+          Garment Manufacturers
+        </button>
+      </div>
+
       {/* Filter Pills */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-        {statuses.map(s => (
+        {['all', 'needs_fix', 'new', 'lost'].map(s => (
           <button
             key={s}
             className={`btn btn-sm ${filter === s ? 'btn-primary' : 'btn-ghost'}`}
