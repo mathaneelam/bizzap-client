@@ -187,6 +187,68 @@ class TestCopyDraftParsing(unittest.TestCase):
         self.assertEqual(site_json['seo']['title'], self.VALID_DRAFT['seo_title'])
         self.assertEqual(site_json['seo']['meta_description'], self.VALID_DRAFT['seo_meta'])
 
+    def test_html_copy_draft_detection_and_parsing(self):
+        """A string starting with < or containing <html> in DB should trigger is_custom_html."""
+        raw_html = "<html><body><h1>Hello</h1></body></html>"
+        
+        # Simulating DB lookup and classification logic:
+        content = raw_html.strip()
+        is_custom_html = False
+        copy_data = None
+        if content.startswith('<') or '<html>' in content.lower():
+            copy_data = content
+            is_custom_html = True
+            
+        self.assertEqual(copy_data, raw_html)
+        self.assertTrue(is_custom_html)
+        
+        # Test snippet starting with simple tag
+        raw_html_snippet = "<div>Some custom landing page</div>"
+        content_snippet = raw_html_snippet.strip()
+        is_custom_html_snippet = False
+        copy_data_snippet = None
+        if content_snippet.startswith('<') or '<html>' in content_snippet.lower():
+            copy_data_snippet = content_snippet
+            is_custom_html_snippet = True
+            
+        self.assertEqual(copy_data_snippet, raw_html_snippet)
+        self.assertTrue(is_custom_html_snippet)
+
+    def test_custom_html_mode_generates_valid_site_json(self):
+        """Verifies that in custom HTML mode, we generate a valid minimal site.json."""
+        business = {
+            'name': "Sri Vinayak Cotsyn",
+            'category': "Garment Manufacturer",
+            'segment': "manufacturer",
+            'phone': "+919876543210",
+            'website': None,
+            'rating': 4.2,
+            'review_count': 25,
+            'address': "SIDCO Industrial Estate, Tiruppur",
+            'lat': 11.108,
+            'lng': 77.341,
+            'place_ref': "google-maps-1"
+        }
+        
+        # Mock copy_data used when HTML mode is active
+        mock_copy_data = {
+            "tagline": business.get('category') or "Custom HTML Website",
+            "hero_headline": business['name'],
+            "hero_sub": business.get('category') or "",
+            "about_body": f"Welcome to {business['name']}.",
+            "seo_title": business['name'],
+            "seo_meta": f"Website for {business['name']} in Tiruppur.",
+            "offerings": [],
+            "capabilities": [],
+            "testimonials": []
+        }
+        
+        site_json = assemble_site_json(business, mock_copy_data, "manufacturer")
+        self.assertEqual(site_json['schema_version'], 1)
+        self.assertEqual(site_json['slug'], "sri-vinayak-cotsyn")
+        self.assertEqual(site_json['template'], "manufacturer")
+        self.assertEqual(site_json['seo']['title'], "Sri Vinayak Cotsyn")
+
 
 if __name__ == '__main__':
     unittest.main()

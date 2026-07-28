@@ -174,6 +174,10 @@ def scrape_maps(query, limit, headed=False):
                         website = web_sel.get_attribute("href")
                 except Exception:
                     pass
+
+                if website and website.strip():
+                    print(f"   Skipping {name} (already has website: {website})")
+                    continue
                     
                 # 5. Phone
                 phone = None

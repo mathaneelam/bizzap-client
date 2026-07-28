@@ -90,6 +90,13 @@ build yet" in `docs/technical-plan.md` §0.
 - **Ask before spending.** Any step that would require a card, a paid signup,
   or exceeding a free-tier limit — stop and ask first.
 
+## Full-Stack Transition (Step 2)
+
+Once a client approves their static HTML demo and converts to a paying client:
+- **Core generator remains clean**: Do not add client-specific backend code to the main `pipeline/` or `renderer/` folders. Keep the core generator dedicated only to sourcing leads and generating first-touch demos.
+- **Move code on Close**: Initialize their full-stack app inside `sites/{slug}/`. If the codebase gets too large or they want ownership, you can easily initialize a new git repository in `sites/{slug}/` and push it to their private GitHub account for handover.
+- **Template the Backend**: Use the serverless templates (e.g. `infra/templates/fullstack-worker-db`) containing a simple Cloudflare D1 SQLite database + Hono API to deploy their database features. Keep hosting costs at ₹0 using Cloudflare Workers and D1 free tiers.
+
 ## Team
 
 Mathan (Founder — closer/field, final approval), Sakthi (CTO — builder/ops,

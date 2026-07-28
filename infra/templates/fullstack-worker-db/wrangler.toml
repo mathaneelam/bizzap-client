@@ -1,0 +1,10 @@
+name = "bizzap-backend-__CLIENT_SLUG__"
+main = "src/index.ts"
+compatibility_date = "2024-05-24"
+
+# D1 Database Binding
+# Binds your serverless database to `env.DB` in the TypeScript handler
+[[d1_databases]]
+binding = "DB"
+database_name = "bizzap-db-__CLIENT_SLUG__"
+database_id = "__D1_DATABASE_ID__" # Replace this with the actual ID returned from wrangler d1 create

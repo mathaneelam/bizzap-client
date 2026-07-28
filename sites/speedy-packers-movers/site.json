@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "slug": "speedy-packers-movers",
+  "template": "services",
+  "meta": {
+    "name": "Speedy Packers & Movers",
+    "category": "Local Moving Services",
+    "tagline": "Local Moving Services",
+    "description": "Kangayam Road, Tiruppur, TN 641604",
+    "locale": [
+      "en"
+    ]
+  },
+  "theme": {
+    "preset": "violet",
+    "primary": "#1E293B",
+    "accent": "#7C3AED",
+    "font_head": "Outfit",
+    "font_body": "Inter"
+  },
+  "contact": {
+    "phone": "+91 98765 43213",
+    "whatsapp": "+91 98765 43213",
+    "address": "Kangayam Road, Tiruppur, TN 641604",
+    "geo": {
+      "lat": 11.098,
+      "lng": 77.345
+    },
+    "hours": {
+      "mon_sat": "09:30\u201318:30",
+      "sun": "closed"
+    },
+    "socials": {
+      "instagram": "",
+      "facebook": ""
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "headline": "Speedy Packers & Movers",
+      "sub": "Local Moving Services",
+      "cta": "Submit Inquiry",
+      "variant": "centered",
+      "image": ""
+    },
+    {
+      "type": "about",
+      "body": "Welcome to Speedy Packers & Movers.",
+      "stats": [
+        {
+          "k": "Rating",
+          "v": "4.1/5"
+        },
+        {
+          "k": "Reviews",
+          "v": "15"
+        }
+      ]
+    },
+    {
+      "type": "capabilities",
+      "items": [
+        "Skilled Professionals",
+        "On-time Service",
+        "Fair Pricing",
+        "Satisfaction Guaranteed"
+      ]
+    },
+    {
+      "type": "catalog",
+      "items": [
+        {
+          "name": "Service 1",
+          "desc": "Premium offering 1",
+          "moq": null,
+          "price": "Enquire"
+        },
+        {
+          "name": "Service 2",
+          "desc": "Premium offering 2",
+          "moq": null,
+          "price": "Enquire"
+        },
+        {
+          "name": "Service 3",
+          "desc": "Premium offering 3",
+          "moq": null,
+          "price": "Enquire"
+        }
+      ]
+    },
+    {
+      "type": "testimonials",
+      "items": [
+        {
+          "quote": "Working with Speedy Packers & Movers has been a great experience \u2014 professional, reliable, and quality-focused.",
+          "by": "Ramesh K."
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "title": "Speedy Packers & Movers",
+    "meta_description": "Website for Speedy Packers & Movers in Tiruppur.",
+    "keywords": [
+      "local moving services",
+      "tiruppur"
+    ]
+  },
+  "source": {
+    "place_ref": "google-maps-4",
+    "generated_by": "claude-manual",
+    "human_approved": false
+  }
+}

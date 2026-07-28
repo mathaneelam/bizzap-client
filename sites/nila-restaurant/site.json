@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "slug": "nila-restaurant",
+  "template": "food",
+  "meta": {
+    "name": "Nila Restaurant",
+    "category": "Biryani & South Indian Restaurant",
+    "tagline": "Biryani & South Indian Restaurant",
+    "description": "Avinashi Road, Tiruppur, TN 641602",
+    "locale": [
+      "en"
+    ]
+  },
+  "theme": {
+    "preset": "cocoa",
+    "primary": "#2C1810",
+    "accent": "#B7791F",
+    "font_head": "Montserrat",
+    "font_body": "Inter"
+  },
+  "contact": {
+    "phone": "+91 98765 43211",
+    "whatsapp": "+91 98765 43211",
+    "address": "Avinashi Road, Tiruppur, TN 641602",
+    "geo": {
+      "lat": 11.115,
+      "lng": 77.352
+    },
+    "hours": {
+      "mon_sat": "09:30\u201318:30",
+      "sun": "closed"
+    },
+    "socials": {
+      "instagram": "",
+      "facebook": ""
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "headline": "Nila Restaurant",
+      "sub": "Biryani & South Indian Restaurant",
+      "cta": "Submit Inquiry",
+      "variant": "centered",
+      "image": ""
+    },
+    {
+      "type": "about",
+      "body": "Welcome to Nila Restaurant.",
+      "stats": [
+        {
+          "k": "Rating",
+          "v": "4.5/5"
+        },
+        {
+          "k": "Reviews",
+          "v": "120"
+        }
+      ]
+    },
+    {
+      "type": "catalog",
+      "items": [
+        {
+          "name": "Signature Item 1",
+          "desc": "Premium offering 1",
+          "moq": null,
+          "price": "Enquire"
+        },
+        {
+          "name": "Signature Item 2",
+          "desc": "Premium offering 2",
+          "moq": null,
+          "price": "Enquire"
+        },
+        {
+          "name": "Signature Item 3",
+          "desc": "Premium offering 3",
+          "moq": null,
+          "price": "Enquire"
+        }
+      ]
+    },
+    {
+      "type": "capabilities",
+      "items": [
+        "Authentic Recipes",
+        "Cozy Ambience",
+        "Party Orders",
+        "Online Booking"
+      ]
+    },
+    {
+      "type": "testimonials",
+      "items": [
+        {
+          "quote": "Working with Nila Restaurant has been a great experience \u2014 professional, reliable, and quality-focused.",
+          "by": "Ramesh K."
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "title": "Nila Restaurant",
+    "meta_description": "Website for Nila Restaurant in Tiruppur.",
+    "keywords": [
+      "biryani & south indian restaurant",
+      "tiruppur"
+    ]
+  },
+  "source": {
+    "place_ref": "google-maps-2",
+    "generated_by": "claude-manual",
+    "human_approved": false
+  }
+}

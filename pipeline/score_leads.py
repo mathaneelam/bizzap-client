@@ -111,16 +111,16 @@ def calculate_score(phone, review_count, website, segment, rating):
     if not review_count or review_count < 3:
         return 0, f"insufficient reviews ({review_count or 0} reviews, min 3 required)"
 
+    # 3. Already has a website (disqualified)
+    if website and str(website).strip() != "":
+        return 0, "already has a website"
+
     score = 0
     reasons = []
 
-    # 3. Website status
-    if not website or str(website).strip() == "":
-        score += 40
-        reasons.append("+40: No website")
-    else:
-        score += 5
-        reasons.append("+5: Has website")
+    # 4. Website status (always no website if we reach here)
+    score += 40
+    reasons.append("+40: No website")
 
     # 4. Review count bonus (1 point per review, capped at 40)
     rev_points = min(review_count, 40)

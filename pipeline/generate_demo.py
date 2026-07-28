@@ -263,24 +263,36 @@ no other text or markdown block wrappers:
 """
     print(prompt)
 
-def watch_for_copy_draft(draft_path):
-    print(f"\nWatching for Claude copy draft at: {os.path.relpath(draft_path, ROOT_DIR)}")
-    print("Please paste Claude's JSON reply into the file to proceed. Press Ctrl+C to cancel.")
+def watch_for_copy_draft(json_path, html_path):
+    print(f"\nWatching for copy draft in drafts/ folder:")
+    print(f"  - JSON copy draft: {os.path.relpath(json_path, ROOT_DIR)}")
+    print(f"  - HTML copy draft: {os.path.relpath(html_path, ROOT_DIR)}")
+    print("Please paste Claude's JSON reply into the .json file, OR paste your HTML content into the .html file to proceed. Press Ctrl+C to cancel.")
     
-    while not os.path.exists(draft_path) or os.path.getsize(draft_path) == 0:
+    while True:
+        # Check JSON
+        if os.path.exists(json_path) and os.path.getsize(json_path) > 0:
+            try:
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                print("\n[Watcher] Found copy draft JSON.")
+                return data, False
+            except Exception as e:
+                print(f"\n\x1b[31mError: Failed to parse drafts JSON: {e}\x1b[0m")
+                print("Please correct the JSON format or use the .html file instead. Waiting...")
+                time.sleep(3)
+                continue
+                
+        # Check HTML
+        if os.path.exists(html_path) and os.path.getsize(html_path) > 0:
+            print("\n[Watcher] Found copy draft HTML.")
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            return html_content, True
+            
         sys.stdout.write('.')
         sys.stdout.flush()
         time.sleep(3)
-    print("\n[Watcher] Found copy draft JSON.")
-    
-    with open(draft_path, 'r', encoding='utf-8') as f:
-        try:
-            return json.load(f)
-        except Exception as e:
-            print(f"\x1b[31mError: Failed to parse drafts JSON: {e}\x1b[0m")
-            print("Please correct the JSON format. Waiting again...")
-            # Recursively wait until corrected
-            return watch_for_copy_draft(draft_path)
 
 def assemble_site_json(business, copy_data, template):
     slug = slugify(business['name'])
@@ -494,6 +506,7 @@ def main():
     parser = argparse.ArgumentParser(description="Bizzap Local Sites — Demo Generation Pipeline")
     parser.add_argument('--slug', type=str, help="Skip selector and build specific business slug directly.")
     parser.add_argument('--bypass-watcher', action='store_true', help="Bypass watcher and use existing draft copy if available.")
+    parser.add_argument('--html', type=str, help="Path to custom HTML file to use directly as the website (bypasses watcher).")
     
     args = parser.parse_args()
     
@@ -580,26 +593,47 @@ def main():
     draft_dir = os.path.join(ROOT_DIR, 'drafts')
     os.makedirs(draft_dir, exist_ok=True)
     draft_path = os.path.join(draft_dir, f"{slug}_copy.json")
+    html_draft_path = os.path.join(draft_dir, f"{slug}_copy.html")
     
     # 1. Check/Watch Copy Draft — priority order:
-    #    1st: Supabase leads.copy_draft (pasted via Admin Dashboard)
-    #    2nd: Local drafts/{slug}_copy.json file
-    #    3rd: Live file watcher (user pastes copy manually)
+    #    1st: Direct --html command line option
+    #    2nd: Supabase leads.copy_draft (pasted JSON or raw HTML via Admin Dashboard)
+    #    3rd: Local drafts/{slug}_copy.json file
+    #    4th: Local drafts/{slug}_copy.html file
+    #    5th: Live file watcher (user pastes copy manually)
     copy_data = None
+    is_custom_html = False
 
-    # Check Supabase copy_draft first
-    if conn and lead_id and lead_id != 999:
+    # Check CLI HTML override first
+    if getattr(args, 'html', None):
+        if os.path.exists(args.html):
+            print(f"\n[Assembler] Using direct HTML file override: {args.html}")
+            with open(args.html, 'r', encoding='utf-8') as f:
+                copy_data = f.read()
+            is_custom_html = True
+        else:
+            print(f"\x1b[31mError: Specified HTML file not found at '{args.html}'\x1b[0m")
+            sys.exit(1)
+
+    # Check Supabase copy_draft next
+    if not copy_data and conn and lead_id and lead_id != 999:
         with conn.cursor() as cur:
             cur.execute("SELECT copy_draft FROM leads WHERE id = %s", (lead_id,))
             row = cur.fetchone()
             if row and row[0]:
-                try:
-                    copy_data = json.loads(row[0])
-                    print("\n\x1b[32m[Assembler] Found copy draft in Supabase — building instantly!\x1b[0m")
-                except Exception:
-                    print("\x1b[33mWarning: copy_draft in Supabase is malformed JSON. Falling back to file.\x1b[0m")
+                content = row[0].strip()
+                if content.startswith('<') or '<html>' in content.lower():
+                    copy_data = content
+                    is_custom_html = True
+                    print("\n\x1b[32m[Assembler] Found HTML copy draft in Supabase — building instantly!\x1b[0m")
+                else:
+                    try:
+                        copy_data = json.loads(content)
+                        print("\n\x1b[32m[Assembler] Found copy draft in Supabase — building instantly!\x1b[0m")
+                    except Exception:
+                        print("\x1b[33mWarning: copy_draft in Supabase is malformed JSON. Falling back to local files.\x1b[0m")
 
-    # Fall back to local file
+    # Fall back to local JSON file
     if not copy_data and os.path.exists(draft_path):
         with open(draft_path, 'r', encoding='utf-8') as f:
             try:
@@ -608,16 +642,38 @@ def main():
             except Exception:
                 pass
 
+    # Fall back to local HTML file
+    if not copy_data and os.path.exists(html_draft_path):
+        with open(html_draft_path, 'r', encoding='utf-8') as f:
+            copy_data = f.read()
+            is_custom_html = True
+            print(f"\n[Assembler] Found local HTML copy draft at {html_draft_path}")
+
     # Fall back to live watcher (or bypass)
     if not copy_data:
         if args.bypass_watcher:
-            print("\x1b[31mError: --bypass-watcher set but no copy draft found in Supabase or local file.\x1b[0m")
+            print("\x1b[31mError: --bypass-watcher set but no copy draft found in Supabase or local files.\x1b[0m")
             sys.exit(1)
         print_claude_prompt(business)
-        copy_data = watch_for_copy_draft(draft_path)
+        copy_data, is_custom_html = watch_for_copy_draft(draft_path, html_draft_path)
         
     # 2. Assemble site.json config
-    site_config = assemble_site_json(business, copy_data, business['segment'])
+    if is_custom_html:
+        # Create a mock/fallback copy draft to satisfy assemble_site_json and schema validation
+        mock_copy_data = {
+            "tagline": business.get('category') or "Custom HTML Website",
+            "hero_headline": business['name'],
+            "hero_sub": business.get('category') or "",
+            "about_body": f"Welcome to {business['name']}.",
+            "seo_title": business['name'],
+            "seo_meta": f"Website for {business['name']} in Tiruppur.",
+            "offerings": [],
+            "capabilities": [],
+            "testimonials": []
+        }
+        site_config = assemble_site_json(business, mock_copy_data, business['segment'])
+    else:
+        site_config = assemble_site_json(business, copy_data, business['segment'])
     
     client_site_dir = os.path.join(ROOT_DIR, 'sites', slug)
     os.makedirs(client_site_dir, exist_ok=True)
@@ -629,6 +685,14 @@ def main():
     
     # 3. Check for Custom Override (e.g. Lovable folder at sites/{slug}/dist/)
     custom_dist_path = os.path.join(client_site_dir, 'dist')
+    
+    if is_custom_html:
+        os.makedirs(custom_dist_path, exist_ok=True)
+        html_dest_path = os.path.join(custom_dist_path, 'index.html')
+        with open(html_dest_path, 'w', encoding='utf-8') as f:
+            f.write(copy_data)
+        print(f"[Assembler] Custom HTML written to override path: {html_dest_path}")
+        
     build_success = True
     
     if os.path.exists(custom_dist_path):

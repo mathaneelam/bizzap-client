@@ -48,7 +48,7 @@ class TestLeadPipeline(unittest.TestCase):
         self.assertIn("+5: High rating (>= 4.0)", reason)
 
     def test_calculate_score_shop_has_website(self):
-        # Base(0) + Has Website(5) + Reviews(50 -> capped at 40) + Shop(5) + High Rating(5) = 55
+        # Has Website -> Disqualified -> Score 0
         score, reason = calculate_score(
             phone="+919876543210", 
             review_count=50, 
@@ -56,11 +56,8 @@ class TestLeadPipeline(unittest.TestCase):
             segment="shop", 
             rating=4.5
         )
-        self.assertEqual(score, 55)
-        self.assertIn("+5: Has website", reason)
-        self.assertIn("+40: Active reviews", reason)
-        self.assertIn("+5: Segment fit (shop)", reason)
-        self.assertIn("+5: High rating (>= 4.0)", reason)
+        self.assertEqual(score, 0)
+        self.assertIn("already has a website", reason)
 
     def test_calculate_score_low_rating_no_segment(self):
         # Base(0) + No Website(40) + Reviews(5) + Unknown Segment(0) + Low Rating(0) = 45
