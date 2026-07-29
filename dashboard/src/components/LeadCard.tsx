@@ -4,18 +4,20 @@ import type { Lead, Business, LogActivity } from '../types'
 import CopyDraftModal from './CopyDraftModal'
 
 function getGmbUrl(business: Business): string {
-  let url = `https://www.google.com/maps/place/${business.place_ref}/`
   if (business.raw) {
     try {
       const rawObj = JSON.parse(business.raw)
       if (rawObj.scraped_url) {
-        url = rawObj.scraped_url
+        return rawObj.scraped_url
       }
     } catch {
       // fallback
     }
   }
-  return url
+  if (business.place_ref && !business.place_ref.startsWith('google-maps-')) {
+    return `https://www.google.com/maps/place/${business.place_ref}`
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.name + ' ' + (business.address || 'Tiruppur'))}`
 }
 
 // Mirrors the Python slugify() in pipeline/generate_demo.py & pipeline/outreach.py so a
@@ -175,16 +177,15 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
               🌐 Their Site
             </a>
           )}
-          {b.place_ref && !b.place_ref.startsWith('google-maps-') && (
-            <a
-              className="btn btn-ghost btn-sm"
-              href={getGmbUrl(b)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              📍 GMB Link
-            </a>
-          )}
+          <a
+            className="btn btn-ghost btn-sm"
+            href={getGmbUrl(b)}
+            target="_blank"
+            rel="noreferrer"
+            title="Verify Google Business Profile"
+          >
+            📍 GMB Profile
+          </a>
           {isAdmin && (
             <button 
               className="btn btn-ghost btn-sm" 
