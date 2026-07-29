@@ -35,11 +35,48 @@ def parse_coordinates(url):
         return float(match.group(1)), float(match.group(2))
     return None, None
 
+def get_existing_place_refs():
+    """
+    Fetches all place_refs from the database and local cache to avoid duplicate scraping.
+    """
+    refs = set()
+    # 1. Query existing businesses from database
+    try:
+        conn = get_connection()
+        if conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT place_ref FROM businesses")
+                rows = cur.fetchall()
+                for r in rows:
+                    if r[0]:
+                        refs.add(r[0])
+            conn.close()
+    except Exception:
+        pass
+        
+    # 2. Check local JSON cache fallback
+    scraped_json = os.path.join(ROOT_DIR, "pipeline", "scraped_leads.json")
+    if os.path.exists(scraped_json):
+        try:
+            with open(scraped_json, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for item in data:
+                    if item.get("place_ref"):
+                        refs.add(item["place_ref"])
+        except Exception:
+            pass
+            
+    return refs
+
 def scrape_maps(query, limit, headed=False):
     """
     Uses Playwright to scrape Google Maps search results.
+    Automatically skips businesses already present in the database or local cache.
     """
     results = []
+    existing_refs = get_existing_place_refs()
+    if existing_refs:
+        print(f"[Deduplication] Loaded {len(existing_refs)} previously scraped business(es) to avoid duplicates.")
     
     with sync_playwright() as p:
         print(f"\n[Scraper] Launching browser (headed={headed})...")
@@ -91,7 +128,7 @@ def scrape_maps(query, limit, headed=False):
             no_change_count = 0
             last_height = 0
             
-            print("[Scraper] Scrolling feed to gather listings...")
+            print("[Scraper] Scrolling feed to gather fresh listings...")
             while len(links) < limit and no_change_count < 15:
                 # Scroll container
                 page.evaluate(f"""() => {{
@@ -121,6 +158,14 @@ def scrape_maps(query, limit, headed=False):
                 for item in visible_items:
                     href = item.get_attribute("href")
                     if href:
+                        # Skip previously scraped businesses
+                        try:
+                            place_ref = href.split('/place/')[1].split('/')[0]
+                            if place_ref in existing_refs:
+                                continue
+                        except Exception:
+                            pass
+
                         # Skip Sponsored Ads
                         try:
                             parent_box = item.locator("xpath=ancestor::div[contains(@class, 'Nv2PK')]").first
@@ -135,7 +180,7 @@ def scrape_maps(query, limit, headed=False):
                         if len(links) >= limit:
                             break
                             
-                print(f"   Collected {len(links)} link(s) so far...")
+                print(f"   Collected {len(links)} brand-new link(s) so far...")
             
             links = list(links)[:limit]
             
