@@ -121,6 +121,16 @@ def scrape_maps(query, limit, headed=False):
                 for item in visible_items:
                     href = item.get_attribute("href")
                     if href:
+                        # Skip Sponsored Ads
+                        try:
+                            parent_box = item.locator("xpath=ancestor::div[contains(@class, 'Nv2PK')]").first
+                            if parent_box.is_visible():
+                                box_text = parent_box.inner_text()
+                                if "Sponsored" in box_text or "Ad ·" in box_text:
+                                    continue
+                        except Exception:
+                            pass
+
                         links.add(href)
                         if len(links) >= limit:
                             break
@@ -165,6 +175,11 @@ def scrape_maps(query, limit, headed=False):
                             review_count = int(match.group(2).replace(',', ''))
                 except Exception:
                     pass
+
+                # Pre-check minimum reviews (at least 3)
+                if not review_count or review_count < 3:
+                    print(f"   Skipping {name} (insufficient reviews: {review_count or 0}, min 3 required)")
+                    continue
                     
                 # 4. Website
                 website = None
@@ -187,6 +202,11 @@ def scrape_maps(query, limit, headed=False):
                         phone = phone_sel.get_attribute("data-item-id").replace("phone:tel:", "").strip()
                 except Exception:
                     pass
+
+                # Pre-check phone number
+                if not phone or not phone.strip():
+                    print(f"   Skipping {name} (no phone number listed on Google Maps)")
+                    continue
                     
                 # 6. Address
                 address = None
