@@ -213,7 +213,7 @@ def scrape_maps(query, limit, headed=False):
                 try:
                     addr_sel = page.locator("button[data-item-id='address']").first
                     if addr_sel.is_visible():
-                        address = addr_sel.inner_text().strip()
+                        address = addr_sel.inner_text().replace('\ue0c8', '').strip()
                 except Exception:
                     pass
                     
