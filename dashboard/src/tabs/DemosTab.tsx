@@ -44,7 +44,36 @@ function DemoCard({
   logActivity?: LogActivity
 }) {
   const [showApptModal, setShowApptModal] = useState(false)
-  const biz = demo.leads?.businesses
+
+  // Normalize joined lead object from Supabase (handles array or object)
+  const rawLead = Array.isArray(demo.leads) ? (demo.leads as any)[0] : demo.leads
+  const effectiveLead: Lead = rawLead || {
+    id: demo.lead_id || 0,
+    business_id: 0,
+    score: 50,
+    has_website: false,
+    reason: null,
+    copy_draft: null,
+    gen_count: 0,
+    status: 'demo_built',
+    created_at: demo.built_at,
+    businesses: {
+      id: 0,
+      place_ref: demo.slug,
+      name: demo.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      category: 'Business',
+      segment: 'services',
+      phone: null,
+      website: demo.demo_url,
+      rating: 5,
+      review_count: 1,
+      address: 'Tiruppur',
+      lat: null,
+      lng: null,
+      raw: null,
+    }
+  }
+  const biz = effectiveLead.businesses
 
   return (
     <>
@@ -77,23 +106,21 @@ function DemoCard({
           🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
         </div>
 
-        {demo.leads?.reason && (
+        {effectiveLead.reason && (
           <div style={{ marginTop: 10, background: 'var(--surface-2)', padding: '8px 12px', borderRadius: 8, fontSize: 12, color: 'var(--text)' }}>
-            💬 Note / Appointment: <em>{demo.leads.reason}</em>
+            💬 Note / Appointment: <em>{effectiveLead.reason}</em>
           </div>
         )}
 
         <div className="card-actions" style={{ marginTop: 18 }}>
-          {demo.leads && (
-            <button
-              className="btn btn-sm"
-              style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)' }}
-              onClick={() => setShowApptModal(true)}
-              title="Schedule an in-person meeting or call back appointment"
-            >
-              📅 Book Appointment
-            </button>
-          )}
+          <button
+            className="btn btn-sm"
+            style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)' }}
+            onClick={() => setShowApptModal(true)}
+            title="Schedule an in-person meeting or call back appointment"
+          >
+            📅 Book Appointment
+          </button>
 
           <a
             className="btn btn-primary btn-sm"
@@ -114,11 +141,9 @@ function DemoCard({
               🌐 Their Current Site
             </a>
           )}
-          {demo.leads && (
-            <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => onOutreach(demo.leads!)}>
-              💬 Outreach & Invoice
-            </button>
-          )}
+          <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => onOutreach(effectiveLead)}>
+            💬 Outreach & Invoice
+          </button>
           <button
             className="btn btn-ghost btn-sm"
             style={{ color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.3)' }}
@@ -154,9 +179,9 @@ function DemoCard({
         </div>
       </div>
 
-      {showApptModal && demo.leads && (
+      {showApptModal && (
         <ScheduleAppointmentModal
-          lead={demo.leads}
+          lead={effectiveLead}
           onClose={() => setShowApptModal(false)}
           onUpdated={onUpdated}
           onToast={onToast}
@@ -166,6 +191,7 @@ function DemoCard({
     </>
   )
 }
+
 
 
 export default function DemosTab({ onToast, logActivity }: Props) {
