@@ -4,6 +4,7 @@ import type { Lead, Business, LogActivity } from '../types'
 import { CALL_STATUS_OPTIONS, formatStatusLabel } from '../types'
 import CopyDraftModal from './CopyDraftModal'
 import ScheduleAppointmentModal from './ScheduleAppointmentModal'
+import LovableLinkModal from './LovableLinkModal'
 
 function getGmbUrl(business: Business): string {
   if (business.raw) {
@@ -53,6 +54,7 @@ function statusPillClass(status: string) {
 export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmin }: Props) {
   const [showModal, setShowModal] = useState(false)
   const [showApptModal, setShowApptModal] = useState(false)
+  const [showLovableModal, setShowLovableModal] = useState(false)
   const [moving, setMoving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
@@ -245,6 +247,15 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '🔄 Re-Generate' : '✨ Generate'}
           </button>
+          
+          <button
+            className="btn btn-sm"
+            style={{ background: 'rgba(168,85,247,0.15)', color: '#a855f7', border: '1px solid rgba(168,85,247,0.3)' }}
+            onClick={() => setShowLovableModal(true)}
+          >
+            🔗 Lovable
+          </button>
+
           <a
             className="btn btn-ghost btn-sm"
             href={siteUrl}
@@ -303,7 +314,15 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           logActivity={logActivity}
         />
       )}
+
+      {showLovableModal && (
+        <LovableLinkModal
+          lead={lead}
+          onClose={() => setShowLovableModal(false)}
+          onUpdated={onUpdated}
+          onToast={onToast}
+        />
+      )}
     </>
   )
 }
-

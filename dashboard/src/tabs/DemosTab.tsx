@@ -44,6 +44,7 @@ function DemoCard({
   logActivity?: LogActivity
 }) {
   const [showApptModal, setShowApptModal] = useState(false)
+  const [viewMode, setViewMode] = useState<'preview' | 'screenshot'>('preview')
 
   // Normalize joined lead object from Supabase (handles array or object)
   const rawLead = Array.isArray(demo.leads) ? (demo.leads as any)[0] : demo.leads
@@ -74,12 +75,45 @@ function DemoCard({
     }
   }
   const biz = effectiveLead.businesses
+  const targetUrl = demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`
 
   return (
     <>
       <div className="card">
-        {/* Screenshot */}
-        {demo.screenshot ? (
+        {/* Toggle Bar for Live Preview vs Screenshot */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1 }}>
+            Website Demo Preview
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button
+              className={`btn btn-xs ${viewMode === 'preview' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ fontSize: 11, padding: '2px 8px' }}
+              onClick={() => setViewMode('preview')}
+            >
+              🌐 Live Preview
+            </button>
+            <button
+              className={`btn btn-xs ${viewMode === 'screenshot' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ fontSize: 11, padding: '2px 8px' }}
+              onClick={() => setViewMode('screenshot')}
+            >
+              🖼️ Screenshot
+            </button>
+          </div>
+        </div>
+
+        {/* Live Preview Iframe or Screenshot */}
+        {viewMode === 'preview' ? (
+          <div style={{ position: 'relative', width: '100%', height: 280, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', background: '#090d16', marginBottom: 16 }}>
+            <iframe
+              src={targetUrl}
+              title={`${biz?.name || demo.slug} Live Preview`}
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            />
+          </div>
+        ) : demo.screenshot ? (
           <div style={{ overflow: 'hidden', borderRadius: 10, marginBottom: 16 }}>
             <img
               className="demo-screenshot"
@@ -89,7 +123,7 @@ function DemoCard({
             />
           </div>
         ) : (
-          <div className="demo-screenshot-placeholder">📷 No screenshot yet</div>
+          <div className="demo-screenshot-placeholder" style={{ height: 160, marginBottom: 16 }}>📷 No screenshot taken yet</div>
         )}
 
         <div className="card-header">
@@ -104,6 +138,11 @@ function DemoCard({
 
         <div className="meta-row">
           🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
+          {demo.demo_url && (
+            <>
+              &nbsp;·&nbsp; <span style={{ color: '#a855f7', fontWeight: 600 }}>✨ Lovable Demo Linked</span>
+            </>
+          )}
         </div>
 
         {effectiveLead.reason && (
@@ -124,12 +163,14 @@ function DemoCard({
 
           <a
             className="btn btn-primary btn-sm"
-            href={demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`}
+            style={{ background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)', border: 'none' }}
+            href={targetUrl}
             target="_blank"
             rel="noreferrer"
           >
-            ✨ AI Website
+            ✨ Open Lovable Site
           </a>
+
           {biz?.website && (
             <a
               className="btn btn-ghost btn-sm"
