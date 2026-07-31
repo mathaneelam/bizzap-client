@@ -64,13 +64,14 @@ export default function InsightsTab({ onToast }: Props) {
     'lead_status_changed',
     'lead_comment_updated',
     'demo_sent_back',
+    'demo_dropped',
     'business_deleted'
   ])
 
   const filteredLogs = logs.filter(log => {
     if (!dropoffActivityActions.has(log.action)) return false
     if (stageFilter === 'lead' && !['lead_status_changed', 'lead_comment_updated'].includes(log.action)) return false
-    if (stageFilter === 'demo' && log.action !== 'demo_sent_back') return false
+    if (stageFilter === 'demo' && !['demo_sent_back', 'demo_dropped'].includes(log.action)) return false
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
@@ -200,15 +201,16 @@ export default function InsightsTab({ onToast }: Props) {
               <tbody>
                 {filteredLogs.map(log => {
                   const meta = log.metadata || {}
-                  const statusStr = (meta.status as string) || (log.action === 'demo_sent_back' ? 'needs_fix' : 'updated')
+                  const statusStr = (meta.status as string) || (log.action === 'demo_sent_back' ? 'needs_fix' : log.action === 'demo_dropped' ? 'dropped' : 'updated')
                   const reasonStr = (meta.reason as string) || (meta.label as string) || 'No comment provided'
+                  const isDemoStage = ['demo_sent_back', 'demo_dropped'].includes(log.action)
 
                   return (
                     <tr key={log.id}>
                       <td style={{ fontWeight: 600 }}>{log.entity_label || 'Business'}</td>
                       <td>
                         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                          {log.action === 'demo_sent_back' ? '🖥️ Demo Stage' : '📋 Lead Stage'}
+                          {isDemoStage ? '🖥️ Demo Stage' : '📋 Lead Stage'}
                         </span>
                       </td>
                       <td>
@@ -236,3 +238,4 @@ export default function InsightsTab({ onToast }: Props) {
     </div>
   )
 }
+

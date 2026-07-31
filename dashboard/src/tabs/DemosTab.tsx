@@ -24,49 +24,19 @@ interface Props {
 }
 
 function DemoCard({
-
   demo,
   onToggleApprove,
   onMoveBack,
+  onDrop,
   onOutreach,
-  onToast,
-  logActivity
 }: {
   demo: Demo
   onToggleApprove: (demo: Demo) => void
   onMoveBack: (demo: Demo) => void
+  onDrop: (demo: Demo) => void
   onOutreach: (lead: Lead) => void
-  onToast: (msg: string) => void
-  logActivity?: LogActivity
 }) {
   const biz = demo.leads?.businesses
-  const initialComment = demo.leads?.reason || ''
-  const [commentText, setCommentText] = useState(initialComment)
-  const [savingComment, setSavingComment] = useState(false)
-
-  async function handleSaveComment() {
-    if (!demo.lead_id) return
-    setSavingComment(true)
-    const { error } = await supabase
-      .from('leads')
-      .update({ reason: commentText.trim() || null })
-      .eq('id', demo.lead_id)
-
-    setSavingComment(false)
-
-    if (error) {
-      onToast('❌ Failed to save demo note: ' + error.message)
-    } else {
-      onToast('📝 Demo comment / note saved!')
-      logActivity?.({
-        action: 'demo_comment_updated',
-        entityType: 'demo',
-        entityId: demo.id,
-        entityLabel: biz?.name || demo.slug,
-        metadata: { reason: commentText }
-      })
-    }
-  }
 
   return (
     <div className="card">
@@ -98,33 +68,13 @@ function DemoCard({
         🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
       </div>
 
-      {/* Demo Notes & Comment Input Box */}
-      <div style={{ marginTop: 14, background: 'var(--surface-2)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)' }}>
-        <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.5, color: 'var(--accent)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-          📝 Demo Notes & Client Feedback
-        </span>
-        <textarea
-          className="textarea"
-          style={{ minHeight: 48, maxHeight: 90, padding: '8px 10px', fontSize: 12, borderRadius: 8, marginBottom: 6 }}
-          placeholder="Capture recent client feedback, demo edits, or review notes..."
-          value={commentText}
-          onChange={e => setCommentText(e.target.value)}
-        />
-        {commentText !== initialComment && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={handleSaveComment}
-              disabled={savingComment}
-              style={{ padding: '4px 10px', fontSize: 11 }}
-            >
-              {savingComment ? 'Saving…' : '💾 Save Demo Note'}
-            </button>
-          </div>
-        )}
-      </div>
+      {demo.leads?.reason && (
+        <div style={{ marginTop: 10, background: 'var(--surface-2)', padding: '8px 12px', borderRadius: 8, fontSize: 12, color: 'var(--text)' }}>
+          💬 Note: <em>{demo.leads.reason}</em>
+        </div>
+      )}
 
-      <div className="card-actions">
+      <div className="card-actions" style={{ marginTop: 18 }}>
         <a
           className="btn btn-primary btn-sm"
           href={demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`}
@@ -155,6 +105,14 @@ function DemoCard({
           onClick={() => onMoveBack(demo)}
         >
           ↩ Send Back for Fixes
+        </button>
+        <button
+          className="btn btn-ghost btn-sm"
+          style={{ color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
+          onClick={() => onDrop(demo)}
+          title="Drop this demo and record the drop reason in Insights"
+        >
+          🚫 Drop
         </button>
         {biz && biz.place_ref && !biz.place_ref.startsWith('google-maps-') && (
           <a
@@ -250,7 +208,37 @@ export default function DemosTab({ onToast, logActivity }: Props) {
     fetchDemos()
   }
 
+  async function dropDemo(demo: Demo) {
+    const name = demo.leads?.businesses?.name || demo.slug
+    const dropReason = window.prompt(
+      `Drop demo for "${name}"?\n\nPlease state the reason why this demo is being dropped:`,
+      'Owner declined website demo / unresponsive.'
+    )
+    if (dropReason === null) return
+
+    const finalReason = dropReason.trim() || 'Demo dropped'
+
+    const { error: demoErr } = await supabase.from('demos').delete().eq('id', demo.id)
+    if (demoErr) {
+      onToast('❌ Failed to drop demo: ' + demoErr.message)
+      return
+    }
+    if (demo.lead_id) {
+      await supabase.from('leads').update({ status: 'dropped', reason: finalReason }).eq('id', demo.lead_id)
+    }
+    onToast('🚫 Demo dropped and recorded in Insights.')
+    logActivity?.({
+      action: 'demo_dropped',
+      entityType: 'demo',
+      entityId: demo.id,
+      entityLabel: name,
+      metadata: { reason: finalReason, status: 'dropped' },
+    })
+    fetchDemos()
+  }
+
   useEffect(() => { fetchDemos() }, [])
+
 
   const approved = demos.filter(d => d.approved).length
 
@@ -293,9 +281,8 @@ export default function DemosTab({ onToast, logActivity }: Props) {
             demo={demo}
             onToggleApprove={toggleApprove}
             onMoveBack={moveBackToLeads}
+            onDrop={dropDemo}
             onOutreach={lead => setOutreachLead(lead)}
-            onToast={onToast}
-            logActivity={logActivity}
           />
         ))}
       </div>
