@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "slug": "rajasri-export",
+  "template": "manufacturer",
+  "meta": {
+    "name": "Rajasri Export",
+    "category": "Garment Exporter",
+    "tagline": "Garment Exporter",
+    "description": "THOTTI PALAYAM, 1/590-A, Poyampalayam, Tiruppur, Tamil Nadu 641603",
+    "locale": [
+      "en"
+    ]
+  },
+  "theme": {
+    "preset": "charcoal",
+    "primary": "#1A1A2E",
+    "accent": "#E8590C",
+    "font_head": "Montserrat",
+    "font_body": "Inter"
+  },
+  "contact": {
+    "phone": "09952800900",
+    "whatsapp": "09952800900",
+    "address": "THOTTI PALAYAM, 1/590-A, Poyampalayam, Tiruppur, Tamil Nadu 641603",
+    "geo": {
+      "lat": 11.1085,
+      "lng": 77.3411
+    },
+    "hours": {
+      "mon_sat": "09:30\u201318:30",
+      "sun": "closed"
+    },
+    "socials": {
+      "instagram": "",
+      "facebook": ""
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "headline": "Rajasri Export",
+      "sub": "Garment Exporter",
+      "cta": "Submit Inquiry",
+      "variant": "centered",
+      "image": ""
+    },
+    {
+      "type": "about",
+      "body": "Welcome to Rajasri Export.",
+      "stats": [
+        {
+          "k": "Rating",
+          "v": "4.4/5"
+        },
+        {
+          "k": "Reviews",
+          "v": "45"
+        },
+        {
+          "k": "Capacity",
+          "v": "50k/mo"
+        }
+      ]
+    },
+    {
+      "type": "capabilities",
+      "items": [
+        "Quality Garments",
+        "Export Packaging",
+        "Timely Deliveries",
+        "Ethical Audited Factory"
+      ]
+    },
+    {
+      "type": "catalog",
+      "items": [
+        {
+          "name": "Product Line 1",
+          "desc": "Premium offering 1",
+          "moq": "500 pcs",
+          "price": null
+        },
+        {
+          "name": "Product Line 2",
+          "desc": "Premium offering 2",
+          "moq": "500 pcs",
+          "price": null
+        },
+        {
+          "name": "Product Line 3",
+          "desc": "Premium offering 3",
+          "moq": "500 pcs",
+          "price": null
+        }
+      ]
+    },
+    {
+      "type": "testimonials",
+      "items": [
+        {
+          "quote": "Rajasri Export delivered exactly what we needed, on time and with real attention to detail.",
+          "by": "Priya S."
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "title": "Rajasri Export",
+    "meta_description": "Website for Rajasri Export in Tiruppur.",
+    "keywords": [
+      "garment exporter",
+      "tiruppur"
+    ]
+  },
+  "source": {
+    "place_ref": "Rajasri+Export",
+    "generated_by": "claude-manual",
+    "human_approved": false
+  }
+}

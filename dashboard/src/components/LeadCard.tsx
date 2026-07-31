@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import type { Lead, Business, LogActivity } from '../types'
+import { CALL_STATUS_OPTIONS, formatStatusLabel } from '../types'
 import CopyDraftModal from './CopyDraftModal'
+import ScheduleAppointmentModal from './ScheduleAppointmentModal'
 
 function getGmbUrl(business: Business): string {
   if (business.raw) {
@@ -20,8 +22,6 @@ function getGmbUrl(business: Business): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.name + ' ' + (business.address || 'Tiruppur'))}`
 }
 
-// Mirrors the Python slugify() in pipeline/generate_demo.py & pipeline/outreach.py so a
-// UI-created demo row uses the exact slug the pipeline will later build against.
 function slugify(name: string): string {
   let slug = name
     .replace(/ /g, '-')
@@ -52,12 +52,66 @@ function statusPillClass(status: string) {
 
 export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmin }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [showApptModal, setShowApptModal] = useState(false)
   const [moving, setMoving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [commentText, setCommentText] = useState(lead.reason || '')
+  const [savingComment, setSavingComment] = useState(false)
+  const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const b = lead.businesses!
-  // Predictable generated-site URL (built by the pipeline from the saved copy draft).
   const siteUrl = `https://bizzap-demos.pages.dev/${slugify(b.name)}/`
+
+  async function handleStatusChange(newStatus: string) {
+    if (!newStatus || newStatus === lead.status) return
+    setUpdatingStatus(true)
+
+    const { error } = await supabase
+      .from('leads')
+      .update({ status: newStatus })
+      .eq('id', lead.id)
+
+    setUpdatingStatus(false)
+
+    if (error) {
+      onToast('❌ Failed to update status: ' + error.message)
+    } else {
+      const label = formatStatusLabel(newStatus)
+      onToast(`📞 Call status updated to "${label}"`)
+      logActivity?.({
+        action: 'lead_status_changed',
+        entityType: 'lead',
+        entityId: lead.id,
+        entityLabel: b.name,
+        metadata: { status: newStatus, label },
+      })
+      onUpdated()
+    }
+  }
+
+  async function handleSaveComment() {
+    setSavingComment(true)
+    const { error } = await supabase
+      .from('leads')
+      .update({ reason: commentText.trim() || null })
+      .eq('id', lead.id)
+
+    setSavingComment(false)
+
+    if (error) {
+      onToast('❌ Failed to save note: ' + error.message)
+    } else {
+      onToast('📝 Call note / reason saved.')
+      logActivity?.({
+        action: 'lead_comment_updated',
+        entityType: 'lead',
+        entityId: lead.id,
+        entityLabel: b.name,
+        metadata: { reason: commentText },
+      })
+      onUpdated()
+    }
+  }
 
   async function handleDeleteBusiness() {
     if (!window.confirm(`Are you sure you want to delete ${b.name}? This will remove the business, lead, and any generated demos from the database.`)) return
@@ -141,14 +195,25 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           {b.address || '—'}
         </div>
 
+        {/* Clickable Phone Number Link */}
         <div className="meta-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-          {b.phone || '—'}
+          {b.phone ? (
+            <a
+              href={`tel:${b.phone}`}
+              style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              title="Click to call business directly"
+            >
+              {b.phone} 📞
+            </a>
+          ) : (
+            '—'
+          )}
         </div>
 
         <div className="meta-row">
           ⭐ {b.rating?.toFixed(1) || '—'} &nbsp;·&nbsp; {b.review_count || 0} reviews
-          &nbsp;·&nbsp; <span className={statusPillClass(lead.status)}>{lead.status.replace('_', ' ')}</span>
+          &nbsp;·&nbsp; <span className={statusPillClass(lead.status)}>{formatStatusLabel(lead.status)}</span>
           {lead.gen_count > 0 && (
             <>
               &nbsp;·&nbsp; <span className="pill pill-new">generated ×{lead.gen_count}</span>
@@ -156,7 +221,63 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           )}
         </div>
 
+        {/* Call Status Dropdown Selector */}
+        <div style={{ marginTop: 14, background: 'var(--surface-2)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+            <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.5, color: 'var(--accent)', fontWeight: 600 }}>
+              📞 Call Outcome Status
+            </span>
+            {updatingStatus && <span style={{ fontSize: 11, color: 'var(--muted)' }}>Updating…</span>}
+          </div>
+          <select
+            className="call-status-select"
+            value={CALL_STATUS_OPTIONS.some(o => o.value === lead.status) ? lead.status : ''}
+            onChange={e => handleStatusChange(e.target.value)}
+            disabled={updatingStatus}
+          >
+            <option value="" disabled>-- Update Call Outcome --</option>
+            {CALL_STATUS_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Comment / Reason Input Box */}
+          <div style={{ marginTop: 10 }}>
+            <textarea
+              className="textarea"
+              style={{ minHeight: 48, maxHeight: 90, padding: '8px 10px', fontSize: 12, borderRadius: 8, marginBottom: 6 }}
+              placeholder="Add call notes, callback time, or drop reason..."
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+            />
+            {commentText !== (lead.reason || '') && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={handleSaveComment}
+                  disabled={savingComment}
+                  style={{ padding: '4px 10px', fontSize: 11 }}
+                >
+                  {savingComment ? 'Saving…' : '💾 Save Note'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="card-actions">
+          {/* Book Appointment Button */}
+          <button
+            className="btn btn-sm"
+            style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)' }}
+            onClick={() => setShowApptModal(true)}
+            title="Schedule an in-person meeting or call back appointment"
+          >
+            📅 Book Appointment
+          </button>
+
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
             {lead.copy_draft ? '🔄 Re-Generate' : '✨ Generate'}
           </button>
@@ -208,6 +329,17 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           onToast={onToast}
         />
       )}
+
+      {showApptModal && (
+        <ScheduleAppointmentModal
+          lead={lead}
+          onClose={() => setShowApptModal(false)}
+          onUpdated={onUpdated}
+          onToast={onToast}
+          logActivity={logActivity}
+        />
+      )}
     </>
   )
 }
+

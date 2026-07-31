@@ -10,7 +10,10 @@ import { useAuth } from './hooks/useAuth'
 import { useActivityLogger } from './hooks/useActivityLogger'
 import type { StaffAccess } from './types'
 
-type Tab = 'leads' | 'demos' | 'deals' | 'staff' | 'activity' | 'settings'
+import CalendarTab from './tabs/CalendarTab'
+import InsightsTab from './tabs/InsightsTab'
+
+type Tab = 'leads' | 'calendar' | 'demos' | 'deals' | 'insights' | 'staff' | 'activity' | 'settings'
 
 function UserMenu({ staff, onSettings, settingsActive, onSignOut }: {
   staff: StaffAccess
@@ -101,8 +104,10 @@ export default function App() {
   const isAdmin = staff.role === 'admin'
   const tabs: { id: Tab; label: string }[] = [
     { id: 'leads', label: '📋 Leads Manager' },
+    { id: 'calendar', label: '🗓️ Calendar' },
     { id: 'demos', label: '🖥️ Demos & Screenshots' },
     { id: 'deals', label: '💳 Deals & Invoices' },
+    { id: 'insights', label: '📊 Insights & Dropoffs' },
     { id: 'activity', label: '📋 Activity' },
     ...(isAdmin ? [{ id: 'staff' as Tab, label: '👥 Staff' }] : []),
   ]
@@ -154,8 +159,10 @@ export default function App() {
 
       <main className="tab-content">
         {tab === 'leads' && <LeadsTab onToast={showToast} logActivity={logger.logActivity} isAdmin={isAdmin} />}
+        {tab === 'calendar' && <CalendarTab onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'demos' && <DemosTab onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'deals' && <DealsTab onToast={showToast} logActivity={logger.logActivity} />}
+        {tab === 'insights' && <InsightsTab onToast={showToast} />}
         {tab === 'activity' && <ActivityTab currentUser={staff} onToast={showToast} />}
         {tab === 'staff' && isAdmin && <StaffTab currentUser={staff} onToast={showToast} logActivity={logger.logActivity} />}
         {tab === 'settings' && (

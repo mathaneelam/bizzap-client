@@ -70,10 +70,14 @@ export default function DemosTab({ onToast, logActivity }: Props) {
   }
 
   // Website not good enough → delete the demo so the card returns to Leads Manager,
-  // and flag the lead `needs_fix` so it sorts to the top there for immediate correction.
+  // and flag the lead `needs_fix` with a reason so it sorts to the top there for immediate correction.
   async function moveBackToLeads(demo: Demo) {
     const name = demo.leads?.businesses?.name || demo.slug
-    if (!window.confirm(`Send "${name}" back to Leads for correction? This removes the current demo.`)) return
+    const reasonInput = window.prompt(
+      `Send "${name}" back to Leads for correction?\n\nPlease enter the reason or fix instructions for the designer:`,
+      demo.leads?.reason || 'Demo rejected — needs design/content fixes.'
+    )
+    if (reasonInput === null) return // User cancelled prompt
 
     const { error: demoErr } = await supabase.from('demos').delete().eq('id', demo.id)
     if (demoErr) {
@@ -81,14 +85,16 @@ export default function DemosTab({ onToast, logActivity }: Props) {
       return
     }
     if (demo.lead_id) {
-      await supabase.from('leads').update({ status: 'needs_fix' }).eq('id', demo.lead_id)
+      const fixReason = reasonInput.trim() || 'Demo rejected — needs fixes'
+      await supabase.from('leads').update({ status: 'needs_fix', reason: fixReason }).eq('id', demo.lead_id)
     }
-    onToast('↩ Sent back to Leads — flagged for correction')
+    onToast('↩ Sent back to Leads — flagged with fix instructions')
     logActivity?.({
       action: 'demo_sent_back',
       entityType: 'lead',
       entityId: demo.lead_id,
       entityLabel: name,
+      metadata: { reason: reasonInput },
     })
     fetchDemos()
   }

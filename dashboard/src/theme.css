@@ -258,12 +258,42 @@ body::before {
   border-radius: 24px;
   border: 1px solid;
 }
-.pill-new       { color: var(--text);  border-color: var(--border);  background: var(--surface-2); }
-.pill-contacted { color: var(--amber); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
-.pill-won       { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
-.pill-lost      { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: rgba(239,68,68,0.08); }
-.pill-demo_built { color: #818cf8; border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.08); }
-.pill-needs_fix { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); }
+.pill-new                  { color: var(--text);  border-color: var(--border);  background: var(--surface-2); }
+.pill-contacted            { color: var(--amber); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+.pill-won                  { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+.pill-lost                 { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: rgba(239,68,68,0.08); }
+.pill-demo_built           { color: #818cf8; border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.08); }
+.pill-needs_fix            { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); }
+.pill-ring_no_response     { color: #c084fc; border-color: rgba(192,132,252,0.3); background: rgba(192,132,252,0.08); }
+.pill-switched_off         { color: var(--muted); border-color: rgba(142,142,160,0.3); background: rgba(142,142,160,0.08); }
+.pill-unable_to_call       { color: var(--muted); border-color: rgba(142,142,160,0.3); background: rgba(142,142,160,0.08); }
+.pill-call_back_later      { color: #38bdf8; border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.08); }
+.pill-not_interested       { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: rgba(239,68,68,0.08); }
+.pill-already_have_site    { color: #f97316; border-color: rgba(249,115,22,0.3); background: rgba(249,115,22,0.08); }
+.pill-appointment_scheduled{ color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.1); }
+.pill-others               { color: var(--text);  border-color: var(--border);  background: var(--surface-2); }
+
+.call-status-select {
+  width: 100%;
+  background: var(--surface-1);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.call-status-select:focus {
+  border-color: var(--accent);
+}
+.call-status-select option {
+  background: var(--surface-1);
+  color: var(--text);
+  padding: 8px;
+}
+
 
 /* ─── Priority (sent-back) lead card ─────────────────────────── */
 .card-priority { border-color: rgba(245,158,11,0.45); box-shadow: 0 0 0 1px rgba(245,158,11,0.25), 0 20px 60px rgba(245,158,11,0.08); }

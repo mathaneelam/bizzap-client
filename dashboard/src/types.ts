@@ -82,6 +82,20 @@ export interface ActivityLog {
 
 // Shared shape for the activity logger, passed down to tabs so any
 // meaningful action can be recorded against the current user.
+export interface Appointment {
+  id: number
+  lead_id: number
+  business_id?: number
+  scheduled_at: string
+  type: 'in_person' | 'phone_call' | 'whatsapp'
+  notes: string | null
+  status: 'scheduled' | 'completed' | 'rescheduled' | 'cancelled'
+  created_by?: string | null
+  created_at: string
+  leads?: Lead & { businesses?: Business }
+  businesses?: Business
+}
+
 export interface LogActivityOptions {
   action: string
   entityType?: string
@@ -91,4 +105,37 @@ export interface LogActivityOptions {
 }
 
 export type LogActivity = (opts: LogActivityOptions) => void
+
+export const CALL_STATUS_OPTIONS = [
+  { value: 'ring_no_response', label: 'Ring No Response' },
+  { value: 'switched_off', label: 'Switched Off' },
+  { value: 'unable_to_call', label: 'Unable To Call' },
+  { value: 'call_back_later', label: 'Call Back Later' },
+  { value: 'not_interested', label: 'Not Interested' },
+  { value: 'already_have_site', label: 'Already Have Site' },
+  { value: 'others', label: 'Others' },
+] as const
+
+export function formatStatusLabel(status: string): string {
+  const statusMap: Record<string, string> = {
+    ring_no_response: 'Ring No Response',
+    switched_off: 'Switched Off',
+    unable_to_call: 'Unable To Call',
+    call_back_later: 'Call Back Later',
+    not_interested: 'Not Interested',
+    already_have_site: 'Already Have Site',
+    others: 'Others',
+    needs_fix: 'Needs Fix',
+    demo_built: 'Demo Built',
+    appointment_scheduled: 'Appointment Scheduled',
+    new: 'New Lead',
+    contacted: 'Contacted',
+    won: 'Won',
+    lost: 'Lost',
+    dnc: 'Do Not Contact',
+  }
+  if (statusMap[status]) return statusMap[status]
+  return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
 

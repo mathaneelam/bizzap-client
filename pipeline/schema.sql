@@ -24,12 +24,13 @@ CREATE TABLE IF NOT EXISTS leads (
   business_id   INTEGER UNIQUE REFERENCES businesses(id) ON DELETE CASCADE,
   score         INTEGER CHECK (score >= 0 AND score <= 100),
   has_website   BOOLEAN DEFAULT FALSE,
-  reason        TEXT,
+  reason        TEXT,                         -- Reason / Call comment / Fix request detail
   copy_draft    TEXT,                         -- JSON blob of Claude-generated copy (pasted via Admin Dashboard)
   gen_count     INTEGER DEFAULT 0,            -- how many times the website copy has been (re)generated
-  status        VARCHAR(50) DEFAULT 'new',    -- new|demo_built|contacted|replied|call|won|lost|dnc|needs_fix
+  status        VARCHAR(50) DEFAULT 'new',    -- new|demo_built|contacted|replied|call|won|lost|dnc|needs_fix|ring_no_response|switched_off|unable_to_call|call_back_later|not_interested|already_have_site|others|appointment_scheduled
   created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- 3. Demos Table (Built & deployed demos awaiting human review)
 CREATE TABLE IF NOT EXISTS demos (
@@ -96,4 +97,18 @@ CREATE TABLE IF NOT EXISTS activity_log (
   metadata     JSONB,                  -- extra structured context
   created_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 8. Appointments Table (Calendar & meeting tracking)
+CREATE TABLE IF NOT EXISTS appointments (
+  id            SERIAL PRIMARY KEY,
+  lead_id       INTEGER REFERENCES leads(id) ON DELETE CASCADE,
+  scheduled_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+  type          VARCHAR(50) DEFAULT 'in_person', -- in_person | phone_call | whatsapp
+  notes         TEXT,
+  status        VARCHAR(50) DEFAULT 'scheduled',  -- scheduled | completed | rescheduled | cancelled
+  created_by    VARCHAR(255),                     -- staff email
+  created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
 

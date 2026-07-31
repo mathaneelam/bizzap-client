@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { Lead, LogActivity } from '../types'
+import { formatStatusLabel } from '../types'
 import LeadCard from '../components/LeadCard'
 
 interface Props {
@@ -52,7 +53,7 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
   const totalLeads = leads.length
   const needsFix   = leads.filter(l => l.status === 'needs_fix').length
   const qualified  = leads.filter(l => l.score >= 40).length
-  const withDraft  = leads.filter(l => l.copy_draft).length
+  const scheduledAppts = leads.filter(l => l.status === 'appointment_scheduled').length
 
   if (loading) return (
     <div className="state-box"><div className="spinner" /><span>Loading leads from Supabase…</span></div>
@@ -65,6 +66,20 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
       <span>Every scraped lead has moved into Demos or Deals. Run <code>python pipeline/score_leads.py --import-file pipeline/sample_raw_leads.json --score</code> to add more.</span>
     </div>
   )
+
+  const filterOptions = [
+    'all',
+    'needs_fix',
+    'appointment_scheduled',
+    'new',
+    'ring_no_response',
+    'switched_off',
+    'unable_to_call',
+    'call_back_later',
+    'not_interested',
+    'already_have_site',
+    'others'
+  ]
 
   return (
     <div>
@@ -79,12 +94,12 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
           <div className="stat-lbl">Needs Fix</div>
         </div>
         <div className="stat-card">
-          <div className="stat-val" style={{ color: 'var(--green)' }}>{qualified}</div>
-          <div className="stat-lbl">Qualified (40+)</div>
+          <div className="stat-val" style={{ color: '#60a5fa' }}>{scheduledAppts}</div>
+          <div className="stat-lbl">Appointments Booked</div>
         </div>
         <div className="stat-card">
-          <div className="stat-val" style={{ color: 'var(--accent)' }}>{withDraft}</div>
-          <div className="stat-lbl">Copy Drafts Ready</div>
+          <div className="stat-val" style={{ color: 'var(--green)' }}>{qualified}</div>
+          <div className="stat-lbl">Qualified (40+)</div>
         </div>
       </div>
 
@@ -101,16 +116,17 @@ export default function LeadsTab({ onToast, logActivity, isAdmin }: Props) {
 
       {/* Filter Pills */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-        {['all', 'needs_fix', 'new', 'lost'].map(s => (
+        {filterOptions.map(s => (
           <button
             key={s}
             className={`btn btn-sm ${filter === s ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilter(s)}
           >
-            {s === 'all' ? 'All' : s.replace('_', ' ')}
+            {s === 'all' ? 'All Leads' : formatStatusLabel(s)}
           </button>
         ))}
       </div>
+
 
       <p className="section-label">Leads — {filtered.length} shown</p>
 
