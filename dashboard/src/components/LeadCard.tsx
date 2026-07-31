@@ -55,8 +55,6 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
   const [showApptModal, setShowApptModal] = useState(false)
   const [moving, setMoving] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [commentText, setCommentText] = useState(lead.reason || '')
-  const [savingComment, setSavingComment] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const b = lead.businesses!
@@ -89,29 +87,6 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
     }
   }
 
-  async function handleSaveComment() {
-    setSavingComment(true)
-    const { error } = await supabase
-      .from('leads')
-      .update({ reason: commentText.trim() || null })
-      .eq('id', lead.id)
-
-    setSavingComment(false)
-
-    if (error) {
-      onToast('❌ Failed to save note: ' + error.message)
-    } else {
-      onToast('📝 Call note / reason saved.')
-      logActivity?.({
-        action: 'lead_comment_updated',
-        entityType: 'lead',
-        entityId: lead.id,
-        entityLabel: b.name,
-        metadata: { reason: commentText },
-      })
-      onUpdated()
-    }
-  }
 
   async function handleDeleteBusiness() {
     if (!window.confirm(`Are you sure you want to delete ${b.name}? This will remove the business, lead, and any generated demos from the database.`)) return
@@ -242,30 +217,8 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
               </option>
             ))}
           </select>
-
-          {/* Comment / Reason Input Box */}
-          <div style={{ marginTop: 10 }}>
-            <textarea
-              className="textarea"
-              style={{ minHeight: 48, maxHeight: 90, padding: '8px 10px', fontSize: 12, borderRadius: 8, marginBottom: 6 }}
-              placeholder="Add call notes, callback time, or drop reason..."
-              value={commentText}
-              onChange={e => setCommentText(e.target.value)}
-            />
-            {commentText !== (lead.reason || '') && (
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={handleSaveComment}
-                  disabled={savingComment}
-                  style={{ padding: '4px 10px', fontSize: 11 }}
-                >
-                  {savingComment ? 'Saving…' : '💾 Save Note'}
-                </button>
-              </div>
-            )}
-          </div>
         </div>
+
 
         <div className="card-actions">
           {/* Book Appointment Button */}
