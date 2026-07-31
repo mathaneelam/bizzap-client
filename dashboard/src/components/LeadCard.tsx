@@ -219,6 +219,17 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
           </select>
         </div>
 
+        {/* Appointment & Note Summary Banner */}
+        {lead.reason && (
+          <div style={{ marginTop: 12, background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', borderRadius: 10, padding: '10px 12px', fontSize: 12, color: 'var(--text)' }}>
+            <span style={{ fontWeight: 600, color: '#60a5fa', display: 'block', marginBottom: 2 }}>
+              📌 Appointment & Notes:
+            </span>
+            <em>{lead.reason}</em>
+          </div>
+        )}
+
+
 
         <div className="card-actions">
           {/* Book Appointment Button */}

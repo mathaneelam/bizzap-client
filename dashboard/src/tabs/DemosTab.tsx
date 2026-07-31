@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { Demo, Business, Lead, LogActivity } from '../types'
 import OutreachModal from '../components/OutreachModal'
+import ScheduleAppointmentModal from '../components/ScheduleAppointmentModal'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -29,112 +30,143 @@ function DemoCard({
   onMoveBack,
   onDrop,
   onOutreach,
+  onUpdated,
+  onToast,
+  logActivity,
 }: {
   demo: Demo
   onToggleApprove: (demo: Demo) => void
   onMoveBack: (demo: Demo) => void
   onDrop: (demo: Demo) => void
   onOutreach: (lead: Lead) => void
+  onUpdated: () => void
+  onToast: (msg: string) => void
+  logActivity?: LogActivity
 }) {
+  const [showApptModal, setShowApptModal] = useState(false)
   const biz = demo.leads?.businesses
 
   return (
-    <div className="card">
-      {/* Screenshot */}
-      {demo.screenshot ? (
-        <div style={{ overflow: 'hidden', borderRadius: 10, marginBottom: 16 }}>
-          <img
-            className="demo-screenshot"
-            src={`file:///${demo.screenshot?.replace(/\\/g, '/')}`}
-            alt={`${biz?.name} screenshot`}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
+    <>
+      <div className="card">
+        {/* Screenshot */}
+        {demo.screenshot ? (
+          <div style={{ overflow: 'hidden', borderRadius: 10, marginBottom: 16 }}>
+            <img
+              className="demo-screenshot"
+              src={`file:///${demo.screenshot?.replace(/\\/g, '/')}`}
+              alt={`${biz?.name} screenshot`}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
+          </div>
+        ) : (
+          <div className="demo-screenshot-placeholder">📷 No screenshot yet</div>
+        )}
+
+        <div className="card-header">
+          <div>
+            <div className="card-name">{biz?.name || demo.slug}</div>
+            <div className="card-category">{biz?.category}</div>
+          </div>
+          <span className={`pill ${demo.approved ? 'pill-won' : 'pill-contacted'}`}>
+            {demo.approved ? '✓ Approved' : 'Pending'}
+          </span>
         </div>
-      ) : (
-        <div className="demo-screenshot-placeholder">📷 No screenshot yet</div>
-      )}
 
-      <div className="card-header">
-        <div>
-          <div className="card-name">{biz?.name || demo.slug}</div>
-          <div className="card-category">{biz?.category}</div>
+        <div className="meta-row">
+          🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
         </div>
-        <span className={`pill ${demo.approved ? 'pill-won' : 'pill-contacted'}`}>
-          {demo.approved ? '✓ Approved' : 'Pending'}
-        </span>
-      </div>
 
-      <div className="meta-row">
-        🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
-      </div>
+        {demo.leads?.reason && (
+          <div style={{ marginTop: 10, background: 'var(--surface-2)', padding: '8px 12px', borderRadius: 8, fontSize: 12, color: 'var(--text)' }}>
+            💬 Note / Appointment: <em>{demo.leads.reason}</em>
+          </div>
+        )}
 
-      {demo.leads?.reason && (
-        <div style={{ marginTop: 10, background: 'var(--surface-2)', padding: '8px 12px', borderRadius: 8, fontSize: 12, color: 'var(--text)' }}>
-          💬 Note: <em>{demo.leads.reason}</em>
-        </div>
-      )}
+        <div className="card-actions" style={{ marginTop: 18 }}>
+          {demo.leads && (
+            <button
+              className="btn btn-sm"
+              style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)' }}
+              onClick={() => setShowApptModal(true)}
+              title="Schedule an in-person meeting or call back appointment"
+            >
+              📅 Book Appointment
+            </button>
+          )}
 
-      <div className="card-actions" style={{ marginTop: 18 }}>
-        <a
-          className="btn btn-primary btn-sm"
-          href={demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          ✨ AI Website
-        </a>
-        {biz?.website && (
           <a
-            className="btn btn-ghost btn-sm"
-            href={biz.website}
+            className="btn btn-primary btn-sm"
+            href={demo.demo_url || `https://bizzap-demos.pages.dev/${demo.slug}/`}
             target="_blank"
             rel="noreferrer"
-            title="Compare with their current website"
           >
-            🌐 Their Current Site
+            ✨ AI Website
           </a>
-        )}
-        {demo.leads && (
-          <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => onOutreach(demo.leads!)}>
-            💬 Outreach & Invoice
+          {biz?.website && (
+            <a
+              className="btn btn-ghost btn-sm"
+              href={biz.website}
+              target="_blank"
+              rel="noreferrer"
+              title="Compare with their current website"
+            >
+              🌐 Their Current Site
+            </a>
+          )}
+          {demo.leads && (
+            <button className="btn btn-primary btn-sm" style={{ background: '#3b82f6' }} onClick={() => onOutreach(demo.leads!)}>
+              💬 Outreach & Invoice
+            </button>
+          )}
+          <button
+            className="btn btn-ghost btn-sm"
+            style={{ color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.3)' }}
+            onClick={() => onMoveBack(demo)}
+          >
+            ↩ Send Back for Fixes
           </button>
-        )}
-        <button
-          className="btn btn-ghost btn-sm"
-          style={{ color: 'var(--amber)', borderColor: 'rgba(245,158,11,0.3)' }}
-          onClick={() => onMoveBack(demo)}
-        >
-          ↩ Send Back for Fixes
-        </button>
-        <button
-          className="btn btn-ghost btn-sm"
-          style={{ color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
-          onClick={() => onDrop(demo)}
-          title="Drop this demo and record the drop reason in Insights"
-        >
-          🚫 Drop
-        </button>
-        {biz && biz.place_ref && !biz.place_ref.startsWith('google-maps-') && (
-          <a
+          <button
             className="btn btn-ghost btn-sm"
-            href={getGmbUrl(biz)}
-            target="_blank"
-            rel="noreferrer"
+            style={{ color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
+            onClick={() => onDrop(demo)}
+            title="Drop this demo and record the drop reason in Insights"
           >
-            📍 GMB Link
-          </a>
-        )}
-        <button
-          className={`btn btn-sm ${demo.approved ? 'btn-ghost' : 'btn-primary'}`}
-          onClick={() => onToggleApprove(demo)}
-          style={demo.approved ? {} : { background: 'rgba(16,185,129,0.15)', color: 'var(--green)', border: '1px solid rgba(16,185,129,0.3)' }}
-        >
-          {demo.approved ? '↩ Unapprove' : '✓ Approve Demo'}
-        </button>
+            🚫 Drop
+          </button>
+          {biz && biz.place_ref && !biz.place_ref.startsWith('google-maps-') && (
+            <a
+              className="btn btn-ghost btn-sm"
+              href={getGmbUrl(biz)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              📍 GMB Link
+            </a>
+          )}
+          <button
+            className={`btn btn-sm ${demo.approved ? 'btn-ghost' : 'btn-primary'}`}
+            onClick={() => onToggleApprove(demo)}
+            style={demo.approved ? {} : { background: 'rgba(16,185,129,0.15)', color: 'var(--green)', border: '1px solid rgba(16,185,129,0.3)' }}
+          >
+            {demo.approved ? '↩ Unapprove' : '✓ Approve Demo'}
+          </button>
+        </div>
       </div>
-    </div>
+
+      {showApptModal && demo.leads && (
+        <ScheduleAppointmentModal
+          lead={demo.leads}
+          onClose={() => setShowApptModal(false)}
+          onUpdated={onUpdated}
+          onToast={onToast}
+          logActivity={logActivity}
+        />
+      )}
+    </>
   )
 }
+
 
 export default function DemosTab({ onToast, logActivity }: Props) {
   const [demos, setDemos] = useState<Demo[]>([])
@@ -283,6 +315,9 @@ export default function DemosTab({ onToast, logActivity }: Props) {
             onMoveBack={moveBackToLeads}
             onDrop={dropDemo}
             onOutreach={lead => setOutreachLead(lead)}
+            onUpdated={fetchDemos}
+            onToast={onToast}
+            logActivity={logActivity}
           />
         ))}
       </div>
