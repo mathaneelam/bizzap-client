@@ -81,7 +81,11 @@ export default function ScheduleAppointmentModal({
       onUpdated()
       onClose()
     } catch (err: any) {
-      onToast('❌ Failed to schedule appointment: ' + err.message)
+      if (err.message?.includes('schema cache') || err.message?.includes('Could not find the table') || err.code === 'PGRST204') {
+        onToast("❌ Table 'appointments' does not exist in Supabase. Please run schema.sql in Supabase SQL Editor.")
+      } else {
+        onToast('❌ Failed to schedule appointment: ' + err.message)
+      }
     } finally {
       setSubmitting(false)
     }

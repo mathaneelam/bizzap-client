@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import type { Demo, Business, Lead, LogActivity } from '../types'
 import OutreachModal from '../components/OutreachModal'
 import ScheduleAppointmentModal from '../components/ScheduleAppointmentModal'
+import EditablePhoneLink from '../components/EditablePhoneLink'
 
 function getGmbUrl(business: Business): string {
   let url = `https://www.google.com/maps/place/${business.place_ref}/`
@@ -138,6 +139,19 @@ function DemoCard({
 
         <div className="meta-row">
           🗓️ Built {new Date(demo.built_at).toLocaleDateString('en-IN')}
+          {biz && biz.id > 0 && (
+            <>
+              &nbsp;·&nbsp;{' '}
+              <EditablePhoneLink
+                phone={biz.phone}
+                businessId={biz.id}
+                businessName={biz.name}
+                onUpdated={onUpdated}
+                onToast={onToast}
+                logActivity={logActivity}
+              />
+            </>
+          )}
           {demo.demo_url && (
             <>
               &nbsp;·&nbsp; <span style={{ color: '#a855f7', fontWeight: 600 }}>✨ Lovable Demo Linked</span>

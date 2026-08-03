@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { Appointment, LogActivity } from '../types'
+import EditablePhoneLink from '../components/EditablePhoneLink'
 
 interface Props {
   onToast: (msg: string) => void
@@ -10,20 +11,27 @@ interface Props {
 export default function CalendarTab({ onToast, logActivity }: Props) {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
+  const [missingTable, setMissingTable] = useState(false)
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterType, setFilterType] = useState<string>('all')
 
   async function fetchAppointments() {
     setLoading(true)
+    setMissingTable(false)
     const { data, error } = await supabase
       .from('appointments')
       .select('*, leads(*, businesses(*))')
       .order('scheduled_at', { ascending: true })
 
     if (error) {
-      onToast('❌ Failed to load appointments: ' + error.message)
+      if (error.message?.includes('schema cache') || error.message?.includes('Could not find the table') || error.code === 'PGRST204') {
+        setMissingTable(true)
+      } else {
+        onToast('❌ Failed to load appointments: ' + error.message)
+      }
     } else if (data) {
       setAppointments(data as Appointment[])
+      setMissingTable(false)
     }
     setLoading(false)
   }
@@ -90,6 +98,79 @@ export default function CalendarTab({ onToast, logActivity }: Props) {
       <div className="state-box">
         <div className="spinner" />
         <span>Loading calendar & appointments…</span>
+      </div>
+    )
+  }
+
+  if (missingTable) {
+    const sqlScript = `CREATE TABLE IF NOT EXISTS appointments (
+  id            SERIAL PRIMARY KEY,
+  lead_id       INTEGER REFERENCES leads(id) ON DELETE CASCADE,
+  scheduled_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+  type          VARCHAR(50) DEFAULT 'in_person',
+  notes         TEXT,
+  status        VARCHAR(50) DEFAULT 'scheduled',
+  created_by    VARCHAR(255),
+  created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to appointments" ON appointments;
+CREATE POLICY "Enable full access to appointments" ON appointments FOR ALL USING (true) WITH CHECK (true);`
+
+    return (
+      <div style={{
+        background: 'var(--surface-1)',
+        border: '1px solid rgba(239, 68, 68, 0.4)',
+        borderRadius: 16,
+        padding: '28px',
+        maxWidth: 800,
+        margin: '20px auto',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
+          <span style={{ fontSize: 32 }}>⚠️</span>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--text)' }}>Table <code>public.appointments</code> Not Found in Supabase</h3>
+            <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--muted)' }}>
+              The <strong>appointments</strong> table is missing from your Supabase database schema.
+            </p>
+          </div>
+        </div>
+
+        <p style={{ fontSize: 14, color: 'var(--text)', marginBottom: 12 }}>
+          To fix this error, open your <strong>Supabase Dashboard &rarr; SQL Editor</strong>, run the following SQL script, and click <strong>Run</strong>:
+        </p>
+
+        <pre style={{
+          background: 'var(--surface-2)',
+          padding: 16,
+          borderRadius: 8,
+          fontSize: 12,
+          color: 'var(--text)',
+          overflowX: 'auto',
+          border: '1px solid var(--border)',
+          fontFamily: 'monospace',
+          marginBottom: 16,
+          lineHeight: 1.5
+        }}>
+          {sqlScript}
+        </pre>
+
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              navigator.clipboard.writeText(sqlScript)
+              onToast('📋 SQL script copied to clipboard!')
+            }}
+          >
+            📋 Copy SQL to Clipboard
+          </button>
+          <button className="btn btn-ghost btn-sm" onClick={fetchAppointments}>
+            🔄 Refresh / Retry
+          </button>
+        </div>
       </div>
     )
   }
@@ -216,9 +297,17 @@ export default function CalendarTab({ onToast, logActivity }: Props) {
 
                 <div className="meta-row">
                   {appt.type === 'in_person' ? '🚶 In-Person Visit' : appt.type === 'phone_call' ? '📞 Phone Call' : '💬 WhatsApp Discussion'}
-                  {biz?.phone && (
+                  {biz?.id && (
                     <>
-                      &nbsp;·&nbsp; <a href={`tel:${biz.phone}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{biz.phone}</a>
+                      &nbsp;·&nbsp;{' '}
+                      <EditablePhoneLink
+                        phone={biz.phone}
+                        businessId={biz.id}
+                        businessName={biz.name}
+                        onUpdated={fetchAppointments}
+                        onToast={onToast}
+                        logActivity={logActivity}
+                      />
                     </>
                   )}
                 </div>

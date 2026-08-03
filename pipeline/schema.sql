@@ -110,5 +110,40 @@ CREATE TABLE IF NOT EXISTS appointments (
   created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 9. Row Level Security (RLS) Configuration
+ALTER TABLE businesses ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to businesses" ON businesses;
+CREATE POLICY "Enable full access to businesses" ON businesses FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to leads" ON leads;
+CREATE POLICY "Enable full access to leads" ON leads FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE demos ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to demos" ON demos;
+CREATE POLICY "Enable full access to demos" ON demos FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to clients" ON clients;
+CREATE POLICY "Enable full access to clients" ON clients FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE deals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to deals" ON deals;
+CREATE POLICY "Enable full access to deals" ON deals FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE staff_access ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to staff_access" ON staff_access;
+CREATE POLICY "Enable full access to staff_access" ON staff_access FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to activity_log" ON activity_log;
+CREATE POLICY "Enable full access to activity_log" ON activity_log FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable full access to appointments" ON appointments;
+CREATE POLICY "Enable full access to appointments" ON appointments FOR ALL USING (true) WITH CHECK (true);
+
+
+
 
 
