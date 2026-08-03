@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SiteConfig } from '../types';
+import { cleanPhoneForWa } from '../utils/phoneUtils';
 
 interface ContactFormProps {
   config: SiteConfig;
@@ -26,8 +27,7 @@ export default function ContactForm({ config }: ContactFormProps) {
 
     const whatsappNumber = contact.whatsapp || contact.phone;
     if (whatsappNumber) {
-      // Clean phone number (keep digits only)
-      const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+      const cleanNumber = cleanPhoneForWa(whatsappNumber);
       
       // Compile message
       const text = `*New Website Inquiry*\n\n` +

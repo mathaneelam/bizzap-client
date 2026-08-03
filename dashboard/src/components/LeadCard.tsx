@@ -180,6 +180,7 @@ export default function LeadCard({ lead, onUpdated, onToast, logActivity, isAdmi
             phone={b.phone}
             businessId={b.id}
             businessName={b.name}
+            businessAddress={b.address}
             onUpdated={onUpdated}
             onToast={onToast}
             logActivity={logActivity}

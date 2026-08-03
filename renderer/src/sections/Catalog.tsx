@@ -1,4 +1,5 @@
 import { CatalogSection, SiteConfig, CatalogItem } from '../types';
+import { cleanPhoneForWa } from '../utils/phoneUtils';
 
 interface CatalogProps {
   section: CatalogSection;
@@ -11,7 +12,7 @@ export default function Catalog({ section, config }: CatalogProps) {
 
   const getWhatsAppLink = (item: CatalogItem) => {
     if (!whatsappNumber) return '#';
-    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+    const cleanNumber = cleanPhoneForWa(whatsappNumber);
     
     // Custom order text
     const text = `Hi ${config.meta.name}, I would like to inquire about your product: *${item.name}*.\n\n` +

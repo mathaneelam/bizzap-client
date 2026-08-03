@@ -1,4 +1,5 @@
 import { SiteConfig } from '../types';
+import { cleanPhoneForWa } from '../utils/phoneUtils';
 
 interface WhatsAppButtonProps {
   config: SiteConfig;
@@ -10,8 +11,7 @@ export default function WhatsAppButton({ config }: WhatsAppButtonProps) {
 
   if (!phoneNumber) return null;
 
-  // Clean phone number for URL (remove +, spaces, dashes)
-  const cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
+  const cleanNumber = cleanPhoneForWa(phoneNumber);
 
   // Pre-fill message based on language locale
   const isTamil = meta.locale?.includes('ta');

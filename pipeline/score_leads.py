@@ -6,6 +6,10 @@ import shutil
 import zipfile
 import psycopg2
 from dotenv import load_dotenv
+try:
+    from pipeline.phone_utils import normalize_phone
+except ImportError:
+    from phone_utils import normalize_phone
 
 # Resolve paths relative to pipeline/ folder
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -85,7 +89,7 @@ def import_leads(conn, file_path):
                     item.get('name'),
                     item.get('category'),
                     item.get('segment'),
-                    item.get('phone'),
+                    normalize_phone(item.get('phone')),
                     item.get('website'),
                     item.get('rating'),
                     item.get('review_count'),

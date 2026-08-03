@@ -1,4 +1,5 @@
 import { HeroSection, SiteConfig } from '../types';
+import { cleanPhoneForDial } from '../utils/phoneUtils';
 
 interface HeroProps {
   section: HeroSection;
@@ -8,10 +9,11 @@ interface HeroProps {
 export default function Hero({ section, config }: HeroProps) {
   const { meta } = config;
   const headline = section.headline || meta.tagline;
-  const sub = section.sub || meta.description;
-  const ctaText = section.cta || 'Get in Touch';
-  const imageUrl = section.image || '';
-  const variant = section.variant || 'split';
+  const sub = section.subheadline || meta.description;
+  const ctaText = section.cta_text || 'Contact Us';
+  const ctaAction = section.cta_action || '#contact';
+  const imageUrl = section.hero_image_url;
+  const showAside = section.show_aside !== false;
 
   // Monogram from the business name — used for the themed panel when no photo exists.
   const monogram = meta.name
@@ -22,21 +24,19 @@ export default function Hero({ section, config }: HeroProps) {
     .join('')
     .toUpperCase();
 
-  // "split" shows a side element (photo if present, else a themed graphic panel).
-  // "centered" is a single, centered column with no aside.
-  const showAside = variant === 'split';
-
   const handleCtaClick = () => {
-    const contactSection = document.getElementById('contact-form-section');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+    if (ctaAction.startsWith('#')) {
+      const el = document.querySelector(ctaAction);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = ctaAction;
     }
   };
 
   return (
-    <section className={`hero-section hero-${variant}`}>
-      <div className="container hero-container">
-        <div className="hero-content animate-fade-in">
+    <section className="hero-section" id="hero">
+      <div className="hero-container">
+        <div className="hero-content">
           <span className="hero-badge">{meta.category}</span>
           <h1>{headline}</h1>
           <p>{sub}</p>
@@ -44,7 +44,7 @@ export default function Hero({ section, config }: HeroProps) {
             <button onClick={handleCtaClick} className="btn btn-primary btn-lg-size">
               {ctaText}
             </button>
-            <a href={`tel:${config.contact.phone}`} className="btn btn-secondary btn-lg-size">
+            <a href={`tel:${cleanPhoneForDial(config.contact.phone)}`} className="btn btn-secondary btn-lg-size">
               Call Now
             </a>
           </div>

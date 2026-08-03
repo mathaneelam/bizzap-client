@@ -1,33 +1,24 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import type { LogActivity } from '../types'
+import { normalizePhone, cleanPhoneForDial, cleanPhoneForWa } from '../utils/phoneUtils'
 
 interface Props {
   phone: string | null
   businessId: number
   businessName: string
+  businessAddress?: string | null
   onUpdated: () => void
   onToast: (msg: string) => void
   logActivity?: LogActivity
   style?: React.CSSProperties
 }
 
-function cleanPhoneForWa(phone: string | null): string {
-  if (!phone) return ''
-  const digits = phone.replace(/\D/g, '')
-  if (digits.length === 10) return '91' + digits
-  return digits
-}
-
-function cleanPhoneForDial(phone: string | null): string {
-  if (!phone) return ''
-  return phone.replace(/[^\d+]/g, '')
-}
-
 export default function EditablePhoneLink({
   phone,
   businessId,
   businessName,
+  businessAddress,
   onUpdated,
   onToast,
   logActivity,
@@ -40,12 +31,12 @@ export default function EditablePhoneLink({
 
   async function handleSavePhone(e?: React.FormEvent) {
     if (e) e.preventDefault()
-    const trimmed = phoneInput.trim()
+    const normalized = normalizePhone(phoneInput, businessAddress)
     setSaving(true)
 
     const { error } = await supabase
       .from('businesses')
-      .update({ phone: trimmed || null })
+      .update({ phone: normalized })
       .eq('id', businessId)
 
     setSaving(false)
@@ -53,13 +44,13 @@ export default function EditablePhoneLink({
     if (error) {
       onToast('❌ Failed to save contact number: ' + error.message)
     } else {
-      onToast(trimmed ? `✅ Saved contact number: ${trimmed}` : '✅ Removed contact number')
+      onToast(normalized ? `✅ Saved contact number: ${normalized}` : '✅ Removed contact number')
       logActivity?.({
         action: 'business_phone_updated',
         entityType: 'business',
         entityId: businessId,
         entityLabel: businessName,
-        metadata: { old_phone: phone, new_phone: trimmed },
+        metadata: { old_phone: phone, new_phone: normalized },
       })
       setIsEditing(false)
       setShowModal(false)
@@ -82,8 +73,8 @@ export default function EditablePhoneLink({
     }
   }
 
-  const waPhone = cleanPhoneForWa(phone)
-  const dialPhone = cleanPhoneForDial(phone)
+  const waPhone = cleanPhoneForWa(phone, businessAddress)
+  const dialPhone = cleanPhoneForDial(phone, businessAddress)
 
   if (isEditing) {
     return (

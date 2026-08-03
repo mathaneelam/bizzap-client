@@ -30,18 +30,14 @@ def slugify(name):
         slug = slug.replace("--", "-")
     return slug.strip("-")
 
+try:
+    from pipeline.phone_utils import clean_phone_for_wa, clean_phone_for_dial
+except ImportError:
+    from phone_utils import clean_phone_for_wa, clean_phone_for_dial
+
 def clean_phone_number(phone):
-    if not phone:
-        return None
-    # Strip everything except digits
-    digits = "".join(c for c in phone if c.isdigit())
-    # Standard Indian mobile numbers are 10 digits
-    if len(digits) == 10:
-        return f"91{digits}"
-    # If already starts with 91, keep it
-    if len(digits) == 12 and digits.startswith("91"):
-        return digits
-    return digits
+    wa = clean_phone_for_wa(phone)
+    return wa if wa else None
 
 def generate_wa_link(phone, name, demo_url):
     cleaned_phone = clean_phone_number(phone)

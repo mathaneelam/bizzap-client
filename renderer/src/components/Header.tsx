@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SiteConfig } from '../types';
+import { cleanPhoneForDial } from '../utils/phoneUtils';
 
 interface HeaderProps {
   config: SiteConfig;
@@ -82,7 +83,7 @@ export default function Header({ config }: HeaderProps) {
 
         {/* CTA */}
         <div className="header-cta">
-          <a href={`tel:${contact.phone}`} className="btn btn-primary header-call-btn">
+          <a href={`tel:${cleanPhoneForDial(contact.phone)}`} className="btn btn-primary header-call-btn">
             Call: {contact.phone}
           </a>
         </div>

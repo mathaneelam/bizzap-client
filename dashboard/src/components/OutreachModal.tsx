@@ -10,6 +10,8 @@ interface Props {
   logActivity?: LogActivity
 }
 
+import { cleanPhoneForWa } from '../utils/phoneUtils'
+
 const PACKAGES = [
   { id: 'starter', name: 'Starter Package', price: 2999 },
   { id: 'business', name: 'Business Package', price: 4999 },
@@ -17,10 +19,8 @@ const PACKAGES = [
 ]
 
 function cleanPhone(phone: string | null): string {
-  if (!phone) return '919999999999'
-  const digits = phone.replace(/\D/g, '')
-  if (digits.length === 10) return `91${digits}`
-  return digits
+  const wa = cleanPhoneForWa(phone)
+  return wa || '919999999999'
 }
 
 export default function OutreachModal({ lead, onClose, onUpdated, onToast, logActivity }: Props) {

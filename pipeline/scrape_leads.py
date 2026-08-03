@@ -7,6 +7,10 @@ import urllib.parse
 from playwright.sync_api import sync_playwright
 import psycopg2
 from dotenv import load_dotenv
+try:
+    from pipeline.phone_utils import normalize_phone
+except ImportError:
+    from phone_utils import normalize_phone
 
 # Resolve paths
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -238,13 +242,14 @@ def scrape_maps(query, limit, headed=False):
                 if website and website.strip():
                     print(f"   Skipping {name} (already has website: {website})")
                     continue
-                    
+
                 # 5. Phone
                 phone = None
                 try:
                     phone_sel = page.locator("button[data-item-id^='phone:tel:']").first
                     if phone_sel.is_visible():
-                        phone = phone_sel.get_attribute("data-item-id").replace("phone:tel:", "").strip()
+                        raw_phone = phone_sel.get_attribute("data-item-id").replace("phone:tel:", "").strip()
+                        phone = normalize_phone(raw_phone)
                 except Exception:
                     pass
 
